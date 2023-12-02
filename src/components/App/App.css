@@ -1,0 +1,102 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.climate-banner {
+  background-image: url('../../../public/images/climate-bg-2.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.climate-banner > div {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 20px;
+  border:1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.app-primary-color {
+  color: #B4D4D1 !important;
+}
+
+.app-primary-bg-color {
+  background-color: #B4D4D1 !important;
+}
+
+.app-secondary-color {
+  color: #E9F2F1 !important;
+}
+
+.app-secondary-bg-color {
+  background-color: #E9F2F1 !important;
+}
+
+.app-dark-color {
+  color: #222826 !important;
+}
+
+.app-dark-bg-color {
+  background-color: #222826 !important;
+}
+
+.app-alternate-color {
+  color: #056DB6 !important;
+}
+
+.app-alternate-bg-color {
+  background-color: #056DB6 !important;
+}
+
+.app-success-color {
+  color: #60C977 !important;
+}
+
+.app-success-bg-color {
+  background-color: #60C977 !important;
+}
+
+.btn-app:hover {
+  box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
+}
+
+.nav .nav-link:hover {
+  color: darkgray !important;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
