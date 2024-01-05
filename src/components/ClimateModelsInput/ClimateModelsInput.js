@@ -140,27 +140,70 @@ class ClimateModelsInput extends Component {
 <div className="row">
     <p>Using the buttons below select the task of interest first and after that select the model that you would like to use for the execution of the selected task</p>
 </div>
-{/* Selection of task */}
 <h3 id="#climate-tasks-input" className="h3 mt-5 mb-5">Select the task of interest</h3>
+{/* Selection of task */}
+<div className="grid-radio">
+
 <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="taskRadioOptions" id="inlineRadio1Task" value="climate_detection" checked={this.state.selectedTask === "climate_detection"} onChange={this.changeTaskType}></input>
-  <label class="form-check-label" for="inlineRadio1Task">Climate Detection</label>
+<label className="card">
+  <input class="radio" type="radio" name="taskRadioOptions" id="inlineRadio1Task" value="climate_detection" checked={this.state.selectedTask === "climate_detection"} onChange={this.changeTaskType}></input>
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">Climate Topic Detection</span>
+      <span className="mt-2">detection of the presence of climate-related topics in a given text</span>
+    </span>
+</label>
+  {/* <label class="form-check-label" for="inlineRadio1Task">Climate Detection</label> */}
+  
 </div>
-<div class="form-check form-check-inline">
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="taskRadioOptions" id="inlineRadio2Task" value="climate_sentiment" checked={this.state.selectedTask === "climate_sentiment"} onChange={this.changeTaskType}></input>
   <label class="form-check-label" for="inlineRadio2Task">Climate Sentiment</label>
-</div>
-<div class="form-check form-check-inline">
+</div> */}
+<label className="card">
+  {/* <input class="radio" type="radio" name="taskRadioOptions" id="inlineRadio1Task" value="climate_detection" checked={this.state.selectedTask === "climate_detection"} onChange={this.changeTaskType}></input> */}
+  <input class="radio" type="radio" name="taskRadioOptions" id="inlineRadio2Task" value="climate_sentiment" checked={this.state.selectedTask === "climate_sentiment"} onChange={this.changeTaskType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">Sentiment Analysis</span>
+      <span className="mt-2">classification of climate-related sentiment in a given text</span>
+    </span>
+</label>
+<label className="card">
+  <input class="radio" type="radio" name="taskRadioOptions" id="inlineRadio3Task" value="climate_specificity" checked={this.state.selectedTask === "climate_specificity"} onChange={this.changeTaskType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">Determination of specificity</span>
+      <span className="mt-2">determining whether a given climate-related paragraph is specific or not</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="taskRadioOptions" id="inlineRadio3Task" value="climate_specificity" checked={this.state.selectedTask === "climate_specificity"} onChange={this.changeTaskType}></input>
   <label class="form-check-label" for="inlineRadio3Task">Climate Specificity</label>
-</div>
-<div class="form-check form-check-inline">
+</div> */}
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="taskRadioOptions" id="inlineRadio4Task" value="climate_commitments_and_actions" checked={this.state.selectedTask === "climate_commitments_and_actions"} onChange={this.changeTaskType}></input>
   <label class="form-check-label" for="inlineRadio4Task">Climate Commitments and Actions</label>
-</div>
-<div class="form-check form-check-inline">
+</div> */}
+<label className="card h-100">
+  <input class="radio" type="radio" name="taskRadioOptions" id="inlineRadio4Task" value="climate_commitments_and_actions" checked={this.state.selectedTask === "climate_commitments_and_actions"} onChange={this.changeTaskType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">Identification of Climate Commitments and Actions</span>
+      <span className="mt-2">identification of whether a given paragraph is about climate-related commitments and actions or not</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="taskRadioOptions" id="inlineRadio5Task" value="climate_tcfd_recommendations" checked={this.state.selectedTask === "climate_tcfd_recommendations"} onChange={this.changeTaskType}></input>
   <label class="form-check-label" for="inlineRadio5Task">Climate Classification on TCFD Recommendations</label>
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="taskRadioOptions" id="inlineRadio5Task" value="climate_tcfd_recommendations" checked={this.state.selectedTask === "climate_tcfd_recommendations"} onChange={this.changeTaskType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">Assignment of a climate disclosure category</span>
+      <span className="mt-2">assigning a climate disclosure category to climate-related paragraphs based on the four categories of the recommendations of the Task Force on Climate-related Financial Disclosures (TCFD)</span>
+    </span>
+</label>
 </div>
 
 {/* 
@@ -168,17 +211,43 @@ Selection of model for the task */}
 
 {this.state.selectedTask === "climate_detection" && <div>
 <h3 id="#climate-models-input" className="h3 mt-5 mb-5">Select which model to use</h3>
-<div class="form-check form-check-inline">
+<div className="grid-radio">
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="auto-detect" checked={this.state.selectedModel === "auto-detect"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">Auto-detect</span>
+      <span className="mt-2">Auto-detect which model is best for the task, depending on whether the input is one sentence only or one or more paragraphs</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="auto-detect" checked={this.state.selectedModel === "auto-detect"} onChange={this.changeModelType}></input>
   <label class="form-check-label" for="inlineRadio1">Auto-detect</label>
-</div>
-<div class="form-check form-check-inline">
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">ClimateBERT Climate-Detector</span>
+      <span className="mt-2">Fine-tuned ClimateBERT language model with a classification head for detecting climate-related paragraphs</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
   <label class="form-check-label" for="inlineRadio2">ClimateBert Climate Detector</label>
-</div>
-<div class="form-check form-check-inline">
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="our-model" checked={this.state.selectedModel === "our-model"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">ClimateCognize Detector - Our model</span>
+      <span className="mt-2">Our own fine-tuned model for detecting climate-related topics in sentences</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
   <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="our-model" checked={this.state.selectedModel === "our-model"} onChange={this.changeModelType}></input>
   <label class="form-check-label" for="inlineRadio3">Our model for detecting climate-related topics</label>
+</div> */}
 </div>
 </div>}
 
