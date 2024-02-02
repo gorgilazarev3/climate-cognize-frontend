@@ -126,6 +126,30 @@
   }
 }
 
+.grid-radio-4 {
+  display: grid;
+  grid-gap: var(--card-padding);
+  margin: 0 auto;
+  max-width: 60em;
+  padding: 0;
+ 
+  @media (min-width: 42em) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.grid-radio-2 {
+  display: grid;
+  grid-gap: var(--card-padding);
+  margin: 0 auto;
+  max-width: 60em;
+  padding: 0;
+ 
+  @media (min-width: 42em) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .card {
   background-color: #fff;
   border-radius: var(--card-radius);

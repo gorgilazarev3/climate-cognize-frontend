@@ -43,28 +43,28 @@ class ClimateModelsInput extends Component {
       });
     }
     else if(this.state.selectedTask === "climate_sentiment") {
-      ClimateCognizeService.sendToSentimentModel(this.state.inputData).then((value) => {
+      ClimateCognizeService.sendToSentimentModel(this.state.inputData, this.state.selectedModel).then((value) => {
         if(value.status === 200) {
           this.handleResponse(value.data);
         }
       });
     }
     else if(this.state.selectedTask === "climate_specificity") {
-      ClimateCognizeService.sendToSpecificityModel(this.state.inputData).then((value) => {
+      ClimateCognizeService.sendToSpecificityModel(this.state.inputData, this.state.selectedModel).then((value) => {
         if(value.status === 200) {
           this.handleResponse(value.data);
         }
       });
     }
     else if(this.state.selectedTask === "climate_commitments_and_actions") {
-      ClimateCognizeService.sendToCommitmentsModel(this.state.inputData).then((value) => {
+      ClimateCognizeService.sendToCommitmentsModel(this.state.inputData, this.state.selectedModel).then((value) => {
         if(value.status === 200) {
           this.handleResponse(value.data);
         }
       });
     }
     else if(this.state.selectedTask === "climate_tcfd_recommendations") {
-      ClimateCognizeService.sendToTCFDModel(this.state.inputData).then((value) => {
+      ClimateCognizeService.sendToTCFDModel(this.state.inputData, this.state.selectedModel).then((value) => {
         if(value.status === 200) {
           this.handleResponse(value.data);
         }
@@ -208,10 +208,10 @@ class ClimateModelsInput extends Component {
 
 {/* 
 Selection of model for the task */}
-
+{/* Climate Detection */}
 {this.state.selectedTask === "climate_detection" && <div>
 <h3 id="#climate-models-input" className="h3 mt-5 mb-5">Select which model to use</h3>
-<div className="grid-radio">
+<div className="grid-radio-4">
 <label className="card">
   <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="auto-detect" checked={this.state.selectedModel === "auto-detect"} onChange={this.changeModelType}></input>
   
@@ -248,13 +248,145 @@ Selection of model for the task */}
   <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="our-model" checked={this.state.selectedModel === "our-model"} onChange={this.changeModelType}></input>
   <label class="form-check-label" for="inlineRadio3">Our model for detecting climate-related topics</label>
 </div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="chatgpt" checked={this.state.selectedModel === "chatgpt"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap"><span class="badge badge-sm fs-6 position-absolute top-0 start-25 translate-middle text-bg-success">NEW <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
+  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+</svg></span> ChatGPT</span>
+      <span className="mt-2">OpenAI's state-of-the-art Large Language Model with tailored prompts for the climate topics</span>
+    </span>
+</label>
 </div>
 </div>}
 
 
+{/* Climate Sentiment */}
+{this.state.selectedTask === "climate_sentiment" && <div>
+<h3 id="#climate-models-input" className="h3 mt-5 mb-5">Select which model to use</h3>
+<div className="grid-radio-2">
+
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">ClimateBERT Climate-Sentiment</span>
+      <span className="mt-2">Fine-tuned ClimateBERT language model with a classification head for classifying climate-related paragraphs into the climate-related sentiment classes opportunity, neutral, or risk.</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  <label class="form-check-label" for="inlineRadio2">ClimateBert Climate Detector</label>
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="chatgpt" checked={this.state.selectedModel === "chatgpt"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap"><span class="badge badge-sm fs-6 position-absolute top-0 start-25 translate-middle text-bg-success">NEW <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
+  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+</svg></span> ChatGPT</span>
+      <span className="mt-2">OpenAI's state-of-the-art Large Language Model with tailored prompts for the climate topics</span>
+    </span>
+</label>
+</div>
+</div>}
+
+{/* Climate Specificity */}
+{this.state.selectedTask === "climate_specificity" && <div>
+<h3 id="#climate-models-input" className="h3 mt-5 mb-5">Select which model to use</h3>
+<div className="grid-radio-2">
+
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">ClimateBERT Climate-Specificity</span>
+      <span className="mt-2">Fine-tuned ClimateBERT language model with a classification head for classifying climate-related paragraphs into specific and non-specific paragraphs.</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  <label class="form-check-label" for="inlineRadio2">ClimateBert Climate Detector</label>
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="chatgpt" checked={this.state.selectedModel === "chatgpt"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap"><span class="badge badge-sm fs-6 position-absolute top-0 start-25 translate-middle text-bg-success">NEW <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
+  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+</svg></span> ChatGPT</span>
+      <span className="mt-2">OpenAI's state-of-the-art Large Language Model with tailored prompts for the climate topics</span>
+    </span>
+</label>
+</div>
+</div>}
+
+{/* Climate Commitments and actions */}
+{this.state.selectedTask === "climate_commitments_and_actions" && <div>
+<h3 id="#climate-models-input" className="h3 mt-5 mb-5">Select which model to use</h3>
+<div className="grid-radio-2">
+
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">ClimateBERT Climate-Commitments and Actions</span>
+      <span className="mt-2">Fine-tuned ClimateBERT language model with a classification head for classifying climate-related paragraphs into paragraphs being about climate commitments and actions and paragraphs not being about climate commitments and actions.</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  <label class="form-check-label" for="inlineRadio2">ClimateBert Climate Detector</label>
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="chatgpt" checked={this.state.selectedModel === "chatgpt"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap"><span class="badge badge-sm fs-6 position-absolute top-0 start-25 translate-middle text-bg-success">NEW <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
+  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+</svg></span> ChatGPT</span>
+      <span className="mt-2">OpenAI's state-of-the-art Large Language Model with tailored prompts for the climate topics</span>
+    </span>
+</label>
+</div>
+</div>}
+
+{/* Climate TCFD Recommendations */}
+{this.state.selectedTask === "climate_tcfd_recommendations" && <div>
+<h3 id="#climate-models-input" className="h3 mt-5 mb-5">Select which model to use</h3>
+<div className="grid-radio-2">
+
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap">ClimateBERT TCFD Recommendations Classifier</span>
+      <span className="mt-2">Fine-tuned ClimateBERT language model with a classification head for classifying climate-related paragraphs into the four TCFD recommendation categories (fsb-tcfd.org).</span>
+    </span>
+</label>
+{/* <div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="climatebert" checked={this.state.selectedModel === "climatebert"} onChange={this.changeModelType}></input>
+  <label class="form-check-label" for="inlineRadio2">ClimateBert Climate Detector</label>
+</div> */}
+<label className="card">
+  <input class="radio" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="chatgpt" checked={this.state.selectedModel === "chatgpt"} onChange={this.changeModelType}></input>
+  
+  <span class="plan-details">
+      <span class="plan-cost fw-bold text-wrap"><span class="badge badge-sm fs-6 position-absolute top-0 start-25 translate-middle text-bg-success">NEW <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
+  <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+</svg></span> ChatGPT</span>
+      <span className="mt-2">OpenAI's state-of-the-art Large Language Model with tailored prompts for the climate topics</span>
+    </span>
+</label>
+</div>
+</div>}
+
+<h3 id="#climate-models-input" className="h3 mt-5 mb-5">Input your data</h3>
 
 <form onSubmit={this.handleSubmit} id="models-form">
 <div className="mt-3 mb-3">
+<label htmlFor="inputData" className="form-label">In the text area below enter your input (you can enter just some words, a sentence or whole paragraphs and texts, the text area is adaptable to all sizes)</label>
 <textarea rows="1" placeholder="Enter the text that you want to validate here" class="form-control" type="text" name="inputData" onChange={this.handleChange}></textarea>
 
 

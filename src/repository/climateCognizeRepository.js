@@ -96,27 +96,31 @@ const ClimateCognizeService = {
         });
     },
 
-    sendToSentimentModel: (inputData) => {
+    sendToSentimentModel: (inputData, selectedModel) => {
         return axios.post("/climate/sentiment", {
-            "input_data": inputData
+            "input_data": inputData,
+            "chosen_model": selectedModel
         });
     },
 
-    sendToSpecificityModel: (inputData) => {
+    sendToSpecificityModel: (inputData, selectedModel) => {
         return axios.post("/climate/specificity", {
-            "input_data": inputData
+            "input_data": inputData,
+            "chosen_model": selectedModel
         });
     },
 
-    sendToCommitmentsModel: (inputData) => {
+    sendToCommitmentsModel: (inputData, selectedModel) => {
         return axios.post("/climate/commitments-actions", {
-            "input_data": inputData
+            "input_data": inputData,
+            "chosen_model": selectedModel
         });
     },
 
-    sendToTCFDModel: (inputData) => {
+    sendToTCFDModel: (inputData, selectedModel) => {
         return axios.post("/climate/tcfd", {
-            "input_data": inputData
+            "input_data": inputData,
+            "chosen_model": selectedModel
         });
     },
 
