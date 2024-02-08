@@ -1,6 +1,6 @@
 import React from 'react';
 import '../App/App.css';
-import {Link} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 const Header = (props) => {
 
   let authenticate;
@@ -22,15 +22,16 @@ const Header = (props) => {
         <header class="p-3">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="/" class="link-app pe-5 app-primary-color d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
+        <a href="/" className="link-app pe-5 fw-bold text-dark d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
+          <img src='images\climate-change.png' className='me-2' width={20}></img>
           ClimateCognize
         </a>
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
-          <li><a href="#" class="nav-link px-2 text-secondary">About</a></li>
-          {localStorage.getItem("userRole") === "ROLE_ADMIN" && <li><a href="/climateModels" class="nav-link px-2 text-secondary">Climate Models</a></li>}
-          {localStorage.getItem("userRole") ==="ROLE_ADMIN" && <li><a href="/datasetEntries" class="nav-link px-2 text-secondary">Dataset Entries</a></li>}
+          <li><NavLink to="/" className="nav-link px-3 text-secondary">Home</NavLink></li>
+          <li><NavLink to="/about" className="nav-link px-3 text-secondary">About</NavLink></li>
+          {localStorage.getItem("userRole") === "ROLE_ADMIN" && <li><NavLink to="/climateModels" className="nav-link px-3 text-secondary">Climate Models</NavLink></li>}
+          {localStorage.getItem("userRole") ==="ROLE_ADMIN" && <li><NavLink to="/datasetEntries" className="nav-link px-3 text-secondary">Dataset Entries</NavLink></li>}
         </ul>
 
         <div class="text-end">

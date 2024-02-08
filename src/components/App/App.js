@@ -3,6 +3,7 @@ import './App.css';
 import  { Navigate, BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from '../Header/Header';
 import Home from '../Home/Home';
+import About from '../About/About';
 // Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
@@ -15,6 +16,7 @@ import { useState } from 'react';
 import Register from '../Authentication/Register';
 import React from 'react';
 import { UserContext } from '../../data-holder/UserContext';
+import Footer from '../Footer/Footer';
 
 function App() {
 
@@ -39,6 +41,7 @@ function App() {
           <Routes>
             <Route path={"/"} element={ <Home currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/home"} element={ <Navigate to="/" currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/about"} element={ <About currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/datasetEntries"} element={ <ClassificationDatasetEntries currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/climateModels"} element={ <ClimateMLModels currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/login"} element={ <Login currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
@@ -48,6 +51,7 @@ function App() {
           </div>
         </main>
 </BrowserRouter>
+<Footer></Footer>
     </div>
   );
 }
