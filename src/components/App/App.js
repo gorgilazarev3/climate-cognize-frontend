@@ -17,6 +17,8 @@ import Register from '../Authentication/Register';
 import React from 'react';
 import { UserContext } from '../../data-holder/UserContext';
 import Footer from '../Footer/Footer';
+import DatasetCreator from '../Datasets/Creator/DatasetCreator';
+import Contact from '../Contact/Contact';
 
 function App() {
 
@@ -42,10 +44,12 @@ function App() {
             <Route path={"/"} element={ <Home currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/home"} element={ <Navigate to="/" currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/about"} element={ <About currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/contact"} element={ <Contact currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/datasetEntries"} element={ <ClassificationDatasetEntries currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/climateModels"} element={ <ClimateMLModels currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/login"} element={ <Login currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/register"} element={ <Register currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/datasetCreator"} element={ <DatasetCreator currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
           </Routes>
             
           </div>

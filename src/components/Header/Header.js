@@ -30,6 +30,7 @@ const Header = (props) => {
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><NavLink to="/" className="nav-link px-3 text-secondary">Home</NavLink></li>
           <li><NavLink to="/about" className="nav-link px-3 text-secondary">About</NavLink></li>
+          <li><NavLink to="/contact" className="nav-link px-3 text-secondary">Contact</NavLink></li>
           {localStorage.getItem("userRole") === "ROLE_ADMIN" && <li><NavLink to="/climateModels" className="nav-link px-3 text-secondary">Climate Models</NavLink></li>}
           {localStorage.getItem("userRole") ==="ROLE_ADMIN" && <li><NavLink to="/datasetEntries" className="nav-link px-3 text-secondary">Dataset Entries</NavLink></li>}
         </ul>
