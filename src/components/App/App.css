@@ -526,6 +526,16 @@ a.active:hover::before {
 
 /* CUSTOM TABLE RESPONSIVE */
 
+.pagination > .active > a
+{
+    background-color: #B4D4D1;
+    border: solid 1px #B4D4D1;
+}
 
+.pagination > .active > a:hover
+{
+    background-color: #B4D4D1;
+    border: solid 1px #B4D4D1;
+}
 
 /* ----------------------- */
