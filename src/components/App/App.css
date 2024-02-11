@@ -539,3 +539,7 @@ a.active:hover::before {
 }
 
 /* ----------------------- */
+
+.selected-column {
+  filter: brightness(85%);
+}
