@@ -1011,10 +1011,10 @@ Selection of model for the task */}
 <p>Help us by providing your input as data we can use to further train and fine-tune our models on. Data provided and annotated by the users will be used in a community-provided dataset that will be incorporated in training and testing of our models.</p>
 <p>All that you need to do to help us is give consent so that your data can be used in this dataset and annotate the correct label in case the model predicted the wrong label.</p>
 
-{(this.state.dataConsent == null) && <div className="row d-flex flex-row"><a onClick={this.handleConsent} data-consent="yes" role="button" className="pe-auto app-success-color me-3 text-underline d-inline">Yes, I consent</a> <a onClick={this.handleConsent} role="button" data-consent="no" className="pe-auto text-danger me-3 text-underline d-inline">No, I do not consent</a></div>}
-{(this.state.dataConsent) && <div>
+{(this.state.dataConsent == null) && <div className="row d-flex flex-row "><a onClick={this.handleConsent} data-consent="yes" role="button" className="pe-auto app-success-color me-3 text-underline d-inline">Yes, I consent</a> <a onClick={this.handleConsent} role="button" data-consent="no" className="pe-auto text-danger me-3 text-underline d-inline">No, I do not consent</a></div>}
+{(this.state.dataConsent) && <div className="mt-5 w-50">
   <p>Please select the correct label for your input</p>
-  <div className="row">Real label:</div>
+  <div className="row mb-3 mt-3">Real label:</div>
   <form onSubmit={this.handleSubmitToDataset}>
   { (() => {
     if(this.state.selectedTask === "climate_detection" || this.state.selectedTask === "climate_commitments_and_actions") {
@@ -1064,7 +1064,7 @@ Selection of model for the task */}
   })()}
 
 
-  <button className="btn btn-app app-success-bg-color mt-2" type="submit">Submit to dataset</button>
+  <button className="btn btn-app app-success-bg-color mt-2 text-light" type="submit">Submit to dataset</button>
   </form>
 </div>}
 </div>

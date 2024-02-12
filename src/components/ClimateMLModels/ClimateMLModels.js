@@ -111,7 +111,7 @@ class ClimateMLModels extends Component {
 
             <p className='mb-5 mt-5'>Below is the table with all the available models in this interface. The currentF1Score column indicates the best F1 score achieved by the model and the current F1 score of the saved model, while the previousF1Score column indicates the F1 score that the model has achieved since the last training with the dataset from this platform.</p>
         
-                <table className="table table-striped table-hover">
+                <table className="table table-responsive table-hover table-striped table-bordered rounded-3 overflow-hidden">
                     <thead className='table-success'>
                     <tr>
                         {Object.getOwnPropertyNames(new ClimateMLModel()).map( (key, index) => {
@@ -121,7 +121,7 @@ class ClimateMLModels extends Component {
                         <th></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className='table-group-divider'>
                         {this.state.models.map((model, index) => {
                             return (
                                 <tr>

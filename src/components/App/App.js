@@ -19,6 +19,7 @@ import { UserContext } from '../../data-holder/UserContext';
 import Footer from '../Footer/Footer';
 import DatasetCreator from '../Datasets/Creator/DatasetCreator';
 import Contact from '../Contact/Contact';
+import UserSettings from '../Users/UserSettings';
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
             <Route path={"/login"} element={ <Login currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/register"} element={ <Register currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/datasetCreator"} element={ <DatasetCreator currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/userSettings"} element={ <UserSettings currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
           </Routes>
             
           </div>

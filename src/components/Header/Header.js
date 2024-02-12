@@ -1,17 +1,33 @@
 import React from 'react';
 import '../App/App.css';
-import {Link, NavLink} from 'react-router-dom';
+import {Link, NavLink, redirect} from 'react-router-dom';
 const Header = (props) => {
 
   let authenticate;
   if (localStorage.getItem("JWT")) {
-      authenticate = (<div><p className='pe-3 fw-bold app-dark-color d-inline'>{localStorage.getItem("currentUser")}</p> <button className="btn app-primary-bg-color btn-app my-2 my-sm-0"
+      authenticate = (<div><button data-bs-toggle="dropdown" aria-expanded="false" className='btn pe-3 fw-bold app-dark-color d-inline'>{localStorage.getItem("currentUser")}</button> <button className="btn app-primary-bg-color btn-app my-2 my-sm-0"
                               onClick={() => {
                                 localStorage.removeItem("JWT")
                                 localStorage.removeItem("currentUser")
                                 localStorage.removeItem("userRole")
-                                window.location.reload();
-                                }}>Logout</button></div>);
+                                window.location.href = "/home";
+                                }}>Logout</button>
+                                
+                                
+                                <ul class="dropdown-menu">
+  <li><a class="dropdown-item" href="#">Profile</a></li>
+  <li><hr class="dropdown-divider"></hr></li>
+  <li><a class="dropdown-item" href="/datasetCreator"><span className='text-muted' style={{fontSize: "0.8em"}}>+</span> New Dataset</a></li>
+  <li><hr class="dropdown-divider"></hr></li>
+  <li><a class="dropdown-item" href="/userSettings">Settings</a></li>
+  <li><a class="dropdown-item" href="#" onClick={() => {
+                                localStorage.removeItem("JWT")
+                                localStorage.removeItem("currentUser")
+                                localStorage.removeItem("userRole")
+                                window.location.href = "/home";
+                                }}>Sign out</a></li>
+</ul>
+                                </div>);
   } else {
       authenticate = (          <><Link to="/login" type="button" class="btn app-dark-color app-secondary-bg-color me-2 btn-app">Login</Link><Link to="/register" type="button" class="btn text-white app-primary-bg-color btn-app">Sign-up</Link></>);
   }

@@ -150,7 +150,7 @@ class ClassificationDatasetEntries extends Component {
             </div>
                 </div>
         
-                <table className="table table-striped table-hover">
+                <table className="table table-responsive table-hover table-striped table-bordered rounded-3 overflow-hidden">
                     <thead className='table-success'>
                     <tr>
                         {Object.getOwnPropertyNames(new ClassificationDatasetEntry()).map( (key, index) => {

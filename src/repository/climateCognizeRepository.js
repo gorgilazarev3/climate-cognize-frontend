@@ -228,6 +228,14 @@ const ClimateCognizeService = {
         
     },
 
+    getUserInfo: (username) => {
+        return axios.post("/users/getUserInfo", {"username": username});
+    },
+
+    changeProfileInfo: (username, name, surname) => {
+        return axios.post("/users/changeProfileInfo", {"username": username, "name": name, "surname": surname});
+    }
+
 
 
     // editBook: (id, name, category, authorId, availableCopies) => {

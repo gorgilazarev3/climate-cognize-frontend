@@ -114,7 +114,7 @@ function DatasetCreator(props) {
             {columns.length > 0 ? <div><button style={{marginLeft: '-3em'}} className='text-nowrap btn btn-outline-success float-start' onClick={() => addNewRow()}>+</button>
             <div className='float-end'>
                 { numRows > 0 && columns.length > 0 &&
-                <CSVLink style={{marginRight: '-6em'}} className="btn-app app-primary-bg-color btn text-dark fw-bold text-decoration-none" filename="dataset.csv" data={getCsvData()}>
+                <CSVLink style={{marginRight: '-6em'}} className="btn-app app-primary-bg-color btn text-dark fw-bold text-decoration-none" filename={datasetName + ".csv"} data={getCsvData()}>
                     Export to <br></br> CSV
                 </CSVLink>
                 }
