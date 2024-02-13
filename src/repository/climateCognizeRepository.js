@@ -234,7 +234,19 @@ const ClimateCognizeService = {
 
     changeProfileInfo: (username, name, surname) => {
         return axios.post("/users/changeProfileInfo", {"username": username, "name": name, "surname": surname});
-    }
+    },
+
+    changePasswordSettings: (username, oldPassword, newPassword, confirmPassword) => {
+        return axios.post("/auth/changePassword", {"username": username, "old-password": oldPassword, "new-password": newPassword,"confirm-password": confirmPassword});
+    },
+
+    getAllDatasets : () => {
+        return axios.get("/datasets/getAll");
+    },
+
+    createNewDataset: (author, name, description, isPrivate, language, task, split, columns, rows, tags, types) => {
+        return axios.post("/datasets/createNewDataset", {"author": author, "name": name, "description": description, "isPrivate": isPrivate, "language": language, "task": task, "split": split, "columns": JSON.stringify(columns), "rows": JSON.stringify(rows), "tags": JSON.stringify(tags), "types": JSON.stringify(types)});
+    },
 
 
 

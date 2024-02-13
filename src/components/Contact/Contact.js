@@ -1,8 +1,10 @@
 export default function Contact() {
     return (
         <div>
-            <div className="header-div">
-                <h1 className="h1">Contact Us</h1>
+            <div className="full-width">
+                <div className="header-div">
+                    <h1 className="h1">Contact Us</h1>
+                </div>
             </div>
             <hr></hr>
 
