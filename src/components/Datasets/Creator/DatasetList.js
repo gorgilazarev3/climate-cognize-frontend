@@ -2,6 +2,7 @@ import React from "react";
 import ClimateCognizeService from "../../../repository/climateCognizeRepository";
 import { useEffect, useState, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
+import User from "../../../models/User";
 
 export default function DatasetList(props) {
 
@@ -22,6 +23,7 @@ export default function DatasetList(props) {
     ]);
     const [languages, setLanguages] = useState([]);
     const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const [user, setUser] = useState(new User("","","",""));
     const navigate = useNavigate();
 
 
@@ -31,6 +33,16 @@ export default function DatasetList(props) {
                 setDatasets(resp.data);
             }
         });
+        let username = localStorage.getItem("currentUser");
+        if(username != null) {
+            ClimateCognizeService.getUserInfo(username).then((resp) => {
+                if(resp.status === 200) {
+                    let obj = resp.data;
+                    setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
+                }
+            });
+        }
+
     }, []);
 
     useEffect(() => {
@@ -113,6 +125,12 @@ export default function DatasetList(props) {
 
     function filteredDatasets(name) {
         let ds = datasets.filter(d => (d['name'].toLowerCase().includes(name.toLowerCase()) || d['author'].toLowerCase().includes(name.toLowerCase())));
+        if(user.isPremium) {
+            ds = datasets.filter(d => d['private'] === false || d['private'] === true && d['author'] == user.username);
+        }
+        else {
+            ds = datasets.filter(d => d['private'] === false);
+        }
         if(taskFilter.length > 0) {
             ds = ds.filter(d => taskFilter.includes(d['task']));
         }
@@ -232,7 +250,12 @@ export default function DatasetList(props) {
                                             </svg> <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                                                 <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
                                             </svg> {dataset['numLikes']}</span></small>
+                                            
+                                            {dataset['private'] && user.isPremium && dataset['author'] === user.username && <small style={{marginTop: "-1em"}} class="float-end d-inline-flex mb-3 px-2 py-1 me-2 fw-semibold text-dark app-primary-bg-color bg-opacity-10 border border-success border-opacity-10 rounded-2">
+                                    PRIVATE </small>}
+                                            
                                     </div>
+                                    
                                 </div>
                                 </div>
                             );

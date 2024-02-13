@@ -34,6 +34,10 @@ button.list-group-item-action:hover {
   background-color: rgba(2,0,36,0.03405112044817926) !important;
 }
 
+.list-group-item-profile {
+  background-color: rgba(2,0,36,0.03405112044817926) !important;
+}
+
 .climate-banner {
   background-image: url('../../../public/images/climate-bg-2.png');
   background-size: contain;

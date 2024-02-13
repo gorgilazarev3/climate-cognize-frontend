@@ -1,8 +1,9 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import Papa from "papaparse";
 import { CSVLink } from "react-csv";
 import ReactPaginate from "react-paginate";
 import ClimateCognizeService from '../../../repository/climateCognizeRepository';
+import User from '../../../models/User';
 
 function DatasetCreator(props) {
     const [columns, setColumns] = useState([]);
@@ -15,10 +16,22 @@ function DatasetCreator(props) {
     const [datasetName, setDatasetName] = useState("");
     const [isPrivate, setDatasetPrivacy] = useState(false);
     const [tags, setTags] = useState([]);
+    const [user, setUser] = useState(new User("","","",""));
 
     const offset = pageSize * page;
     const nextPageOffset = offset + pageSize;
     const pageCount = Math.ceil(inputs.length / pageSize);
+
+    useEffect(() => {
+        let username = localStorage.getItem("currentUser");
+        ClimateCognizeService.getUserInfo(username).then((resp) => {
+            if(resp.status === 200) {
+                let obj = resp.data;
+                setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
+            }
+        });
+    }, []);
+
 
     return (
         <div className='custom-table-responsive'>
@@ -39,7 +52,7 @@ function DatasetCreator(props) {
                 <hr></hr>
 
                 <div class="form-check text-start mb-4">
-                    <input defaultChecked class="form-check-input" type="radio" name="privacyDatasetOptions" id="publicDatasetOptions"></input>
+                    <input onClick={() => setDatasetPrivacy(false)} defaultChecked class="form-check-input" type="radio" name="privacyDatasetOptions" id="publicDatasetOptions"></input>
                     <label class="form-check-label" for="publicDatasetOptions">
                         <div className='row'>
                             <div className='col-2'>
@@ -58,7 +71,7 @@ function DatasetCreator(props) {
                 </div>
                 <div class="form-check text-start">
                     
-                    <input disabled class="form-check-input" type="radio" name="privacyDatasetOptions" id="privateDatasetOptions"></input>
+                    <input onClick={() => setDatasetPrivacy(true)} disabled={!user.isPremium} class="form-check-input" type="radio" name="privacyDatasetOptions" id="privateDatasetOptions"></input>
                     <label class="form-check-label" for="privateDatasetOptions">
                     <div className='row'>
                             <div className='col-2'>
@@ -71,6 +84,8 @@ function DatasetCreator(props) {
                                 <div className='row'>
                                     <p className='fw-bold mb-1'>Private</p>
                                     <small className='text-muted'>Only you (personal dataset) can see and use this dataset.</small>
+                                    {!user.isPremium && <small className='text-muted'>Only accounts with Pro Subscription can create private datasets.</small>  }
+
                                 </div>
                             </div>
                         </div>
@@ -110,7 +125,7 @@ function DatasetCreator(props) {
                         <label htmlFor='col-type-select' className='form-label'>Column Type</label>
                         <select id='col-type-select' name='col-type-select' className='form-select d-inline'>
                             <option>string</option>
-                            <option>numeric</option>
+                            <option>number</option>
                             <option>object</option>
                         </select>
                     </div>
@@ -295,7 +310,6 @@ function DatasetCreator(props) {
             // rows[index] = entries;
             
         }
-        console.log(localStorage.getItem("currentUser"), datasetName, description, isPrivate, language, task, "train", cols, rows, tags, types);
         ClimateCognizeService.createNewDataset(localStorage.getItem("currentUser"), datasetName, description, isPrivate, language, task, "train", cols, rows, tags, types).then((resp) => {
             if(resp.status === 200) {
                 window.location.href = "/datasets";

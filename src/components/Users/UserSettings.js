@@ -1,13 +1,14 @@
 import User from "../../models/User";
 import ClimateCognizeService from "../../repository/climateCognizeRepository";
 import { useEffect, useState } from "react";
-import {useSearchParams} from 'react-router-dom';
+import {useSearchParams, useNavigate} from 'react-router-dom';
 
 export default function UserSettings(props) {
 
     const [user, setUser] = useState(new User("","",""));
     const [selectedButton, setselectedButton] = useState("Profile");
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     
 
@@ -18,6 +19,21 @@ export default function UserSettings(props) {
                 setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role']});
             }
         });
+        let sel = searchParams.get('selectedButton');
+        if(sel != null) {
+            setselectedButton(sel);
+            let allLinks = document.querySelectorAll("div#profile-menu button.list-group-item");
+            for(let link of allLinks) {
+                if(link.textContent == sel) {
+                    link.classList.add("active");
+                    link.setAttribute("aria-current", true);
+                }
+                else {
+                    link.classList.remove("active");
+                    link.removeAttribute("aria-current");
+                }
+            }
+        }
       }, []);
 
     function changeProfileSettings(e) {
@@ -84,7 +100,7 @@ export default function UserSettings(props) {
             <div className="row">
                 <div className="col-3">
                     <div class="list-group" id="profile-menu">
-                        <button type="button" class="list-group-item list-group-item-profile text-start">
+                        <button onClick={() => navigate("/userProfile")} type="button" class="list-group-item list-group-item-profile text-start">
                             <span className="fw-bold">{user.name + " " + user.surname}</span>
                             <br></br>
                             <small class="mt-3 d-inline-flex mb-3 px-2 py-1 fw-semibold bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">{user.username}</small>

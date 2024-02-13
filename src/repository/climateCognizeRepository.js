@@ -248,13 +248,32 @@ const ClimateCognizeService = {
         return axios.get(`/datasets/getById/${id}`);
     },
 
+    getDatasetsByUser : (username) => {
+        return axios.get(`/datasets/getForUser/${username}`);
+    },
+
     likeDataset: (id) => {
         return axios.put(`/datasets/likeDataset/${id}`);
+    },
+
+    downloadDataset: (id) => {
+        return axios.put(`/datasets/downloadDataset/${id}`);
     },
 
     createNewDataset: (author, name, description, isPrivate, language, task, split, columns, rows, tags, types) => {
         return axios.post("/datasets/createNewDataset", {"author": author, "name": name, "description": description, "isPrivate": isPrivate, "language": language, "task": task, "split": split, "columns": JSON.stringify(columns), "rows": JSON.stringify(rows), "tags": JSON.stringify(tags), "types": JSON.stringify(types)});
     },
+
+    subscribeToPro: (username) => {
+        return axios.put(`/users/subscribeToPro`, {"username": username});
+    },
+
+    handleToken : async (token) => {
+        await axios.post("http://localhost:9090/api/payment/charge", "", {         headers: {
+          token: token.id,
+          amount: 9.99,
+        },})
+        }
 
 
 

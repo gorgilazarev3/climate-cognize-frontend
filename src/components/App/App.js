@@ -22,6 +22,8 @@ import Contact from '../Contact/Contact';
 import UserSettings from '../Users/UserSettings';
 import DatasetList from '../Datasets/Creator/DatasetList';
 import DatasetView from '../Datasets/DatasetView';
+import UserDashboard from '../Users/UserDashboard';
+import Pricing from '../Pricing/Pricing';
 
 function App() {
 
@@ -54,8 +56,10 @@ function App() {
             <Route path={"/register"} element={ <Register currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/datasetCreator"} element={ <DatasetCreator currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/userSettings"} element={ <UserSettings currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/userProfile"} element={ <UserDashboard currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/datasets"} element={ <DatasetList currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/dataset/:id"} element={ <DatasetView currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/pricing"} element={ <Pricing currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
           </Routes>
             
           </div>

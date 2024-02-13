@@ -1,8 +1,10 @@
 import React from "react";
 import { useEffect, useState, useReducer } from "react";
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import ClimateCognizeService from "../../repository/climateCognizeRepository";
 import ReactPaginate from "react-paginate";
+import User from "../../models/User";
+import { CSVDownload } from "react-csv";
 
 export default function DatasetView(props) {
     const { id } = useParams();
@@ -10,14 +12,27 @@ export default function DatasetView(props) {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(15);
     const [pageCount, setPageCount] = useState(0);
+    const [isDownloaded, setIsDownloaded] = useState(false);
     const offset = pageSize * page;
     const nextPageOffset = offset + pageSize;
     const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const navigate = useNavigate();
+    const [user, setUser] = useState(new User("","","",""));
 
     useEffect(() => {
         ClimateCognizeService.getDatasetById(id).then((resp) => {
             if (resp.status === 200) {
                 setDataset(resp.data);
+            }
+        });
+        let username = localStorage.getItem("currentUser");
+        if(username === null) {
+            navigate("/login?errorMsg=You are not authorized to view this dataset");
+        }
+        ClimateCognizeService.getUserInfo(username).then((resp) => {
+            if(resp.status === 200) {
+                let obj = resp.data;
+                setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
             }
         });
     }, []);
@@ -26,6 +41,9 @@ export default function DatasetView(props) {
         if(dataset['rows'] != undefined) {
             setPageCount(Math.ceil(dataset['rows'].length / pageSize));
         }
+        if(dataset['private'] && dataset['author'] !== user.username) {
+            navigate("/login?errorMsg=You are not authorized to view this dataset");
+        } 
       }, [dataset['rows']]);
 
     // function setPageCount() {
@@ -52,6 +70,19 @@ export default function DatasetView(props) {
         });
     }
 
+    function increaseDownloads() {
+        ClimateCognizeService.downloadDataset(dataset['id']).then((resp) => {
+            if(resp.status === 200) {
+                setDataset(resp.data);
+                setIsDownloaded(true);
+            }
+        });
+    }
+
+    function getCsvData() {
+        return [dataset['columns'], ...dataset['rows'].map(row => row.entries)];
+    }
+
     return (
         <>
         <div className="full-width">
@@ -63,7 +94,7 @@ export default function DatasetView(props) {
                             <path d="M2 6.161V7c0 1.007.875 1.755 1.904 2.223C4.978 9.71 6.427 10 8 10s3.022-.289 4.096-.777C13.125 8.755 14 8.007 14 7v-.839c-.457.432-1.004.751-1.49.972C11.278 7.693 9.682 8 8 8s-3.278-.307-4.51-.867c-.486-.22-1.033-.54-1.49-.972" />
                             <path d="M2 9.161V10c0 1.007.875 1.755 1.904 2.223C4.978 12.711 6.427 13 8 13s3.022-.289 4.096-.777C13.125 11.755 14 11.007 14 10v-.839c-.457.432-1.004.751-1.49.972-1.232.56-2.828.867-4.51.867s-3.278-.307-4.51-.867c-.486-.22-1.033-.54-1.49-.972" />
                             <path d="M2 12.161V13c0 1.007.875 1.755 1.904 2.223C4.978 15.711 6.427 16 8 16s3.022-.289 4.096-.777C13.125 14.755 14 14.007 14 13v-.839c-.457.432-1.004.751-1.49.972-1.232.56-2.828.867-4.51.867s-3.278-.307-4.51-.867c-.486-.22-1.033-.54-1.49-.972" />
-                        </svg> </span> Datasets:</NavLink> <span style={{ color: "darkgray" }} className="fs-5">{dataset['author']}/</span><span className="fw-bold fs-5">{dataset['name']}</span>
+                        </svg> </span> Datasets:</NavLink> <span onClick={() => navigate("/userProfile?user=" + dataset['author'])}  style={{ color: "darkgray", cursor: "pointer" }} className="fs-5">{dataset['author']}/</span><span className="fw-bold fs-5">{dataset['name']}</span>
                         <div class="btn-group btn-group-sm ms-3 rounded-3" role="group" aria-label="Small button group">
                             <button onClick={() => likeDataset(dataset['id'])} type="button" class="btn btn-outline-secondary" style={{ borderTopLeftRadius: "0.5rem", borderBottomLeftRadius: "0.5rem", borderTopRightRadius: "0px" }}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                                 <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
@@ -73,7 +104,7 @@ export default function DatasetView(props) {
 
                     </div>
 
-                    <div className="mb-5 text-start">
+                    <div className="mb-3 text-start">
                         <span style={{ color: "darkgray" }} className="fs-6">Task: </span>
                         <div class="btn-group btn-group-sm ms-3 rounded-3" role="group" aria-label="Small button group">
                             <button type="button" class="btn btn-outline-secondary" style={{ borderTopLeftRadius: "0.5rem", borderBottomLeftRadius: "0.5rem", borderTopRightRadius: "0px" }}><svg xmlns="http://www.w3.org/2000/svg" className="app-alternate-color" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-richtext" viewBox="0 0 16 16">
@@ -101,6 +132,22 @@ export default function DatasetView(props) {
                         })}
 
                     </div>
+
+                    <div className="mb-5 text-start">
+                    
+                    <span style={{ color: "darkgray" }} className="fs-6"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+</svg> Downloads: </span>
+                        <span className="">{dataset['numDownloads']}</span> 
+                        {user.username != "" && <button className="btn btn-app btn-outline-secondary ms-4 btn-sm" onClick={increaseDownloads}>Download dataset</button>}
+        {isDownloaded == true ? <CSVDownload data={getCsvData()} target="_blank" filename={dataset['name'] + ".csv"} /> : null }
+                    </div>
+{/* 
+                    <CSVLink style={{ marginRight: '-6em' }} className="btn-app app-primary-bg-color btn text-dark fw-bold text-decoration-none" filename={datasetName + ".csv"} data={getCsvData()}>
+                                Export to <br></br> CSV
+                            </CSVLink> */}
+
                 </div>
                 
             </div>
@@ -178,7 +225,7 @@ dataset['columns'] != undefined &&
 
                         <h4>Dataset card for "{dataset['name']}"</h4>
 
-                        <p>{dataset['description']}</p>
+                        <p style={{whiteSpace: "pre-wrap"}}>{dataset['description']}</p>
                     </div>
 
 </>
