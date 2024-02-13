@@ -6,7 +6,8 @@ const instance = axios.create({
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/x-www-form-urlencoded',
         'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
-        'Authorization': localStorage.getItem("JWT")
+        'Authorization': localStorage.getItem("JWT"),
+        'Access-Control-Allow-Credentials': 'true'
     }
 });
 

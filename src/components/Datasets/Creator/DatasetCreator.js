@@ -110,8 +110,8 @@ function DatasetCreator(props) {
                         <label htmlFor='col-type-select' className='form-label'>Column Type</label>
                         <select id='col-type-select' name='col-type-select' className='form-select d-inline'>
                             <option>string</option>
-                            <option>int</option>
-                            <option>double</option>
+                            <option>numeric</option>
+                            <option>object</option>
                         </select>
                     </div>
                     <button className='btn btn-app app-primary-bg-color mt-3' onClick={() => addColumn({ "col_name": document.getElementById('newcol').value, "col_type": document.getElementById('col-type-select').value })}>{columns.length > 0 ? 'Add column' : 'Create dataset table'}</button>

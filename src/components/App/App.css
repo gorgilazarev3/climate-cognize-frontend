@@ -22,6 +22,10 @@ button.list-group-item-action.active {
   font-weight: 500;
 }
 
+button.small-buttons {
+  border: var(--bs-list-group-border-width) solid #000 !important;
+}
+
 button.list-group-item-action:hover {
   box-shadow: inset 8px 0 10px #B4D4D1;
 }

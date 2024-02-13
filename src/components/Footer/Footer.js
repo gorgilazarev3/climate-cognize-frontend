@@ -15,7 +15,7 @@ const Footer = (props) => {
             <div class="row" style={{marginTop: '-5em'}}>
                 <div class="col-sm">
                     <img src='images\climate-change.png' className='me-2' width={20}></img>
-                    <a href="#" class="footer-logo">ClimateCognize</a>
+                    <a href="/" class="footer-logo">ClimateCognize</a>
                     <p class="copyright">
                         <small>&copy; {new Date().getFullYear()}</small>
                     </p>

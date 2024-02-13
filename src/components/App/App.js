@@ -21,6 +21,7 @@ import DatasetCreator from '../Datasets/Creator/DatasetCreator';
 import Contact from '../Contact/Contact';
 import UserSettings from '../Users/UserSettings';
 import DatasetList from '../Datasets/Creator/DatasetList';
+import DatasetView from '../Datasets/DatasetView';
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
             <Route path={"/datasetCreator"} element={ <DatasetCreator currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/userSettings"} element={ <UserSettings currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
             <Route path={"/datasets"} element={ <DatasetList currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
+            <Route path={"/dataset/:id"} element={ <DatasetView currentUser={user.currentUser} updateCurrentUser={updateCurrentUser} /> } />
           </Routes>
             
           </div>
