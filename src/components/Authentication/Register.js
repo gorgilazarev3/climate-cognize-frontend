@@ -98,7 +98,7 @@ const Register = (props) => {
                                onChange={handleChange}
                         />
                     </div>
-                    <button id="submit" type="submit" className="mt-5 btn btn-app app-primary-bg-color">Register</button>
+                    <button id="submit" type="submit" className="mt-5 btn btn-app app-primary-bg-color border border-secondary-subtle">Register</button>
                 </form>
             </div>
         </div>

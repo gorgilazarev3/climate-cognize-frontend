@@ -10,6 +10,7 @@ import { PDFViewer, StyleSheet, View } from'@react-pdf/renderer';
 export default function UserDashboard(props) {
 
     const [user, setUser] = useState(new User("","",""));
+    const [loggedInUser, setLoggedInUser] = useState(new User("","",""));
     const [datasets, setDatasets] = useState([]);
     const [requestedStatistics, setRequestedStatistics] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,7 @@ export default function UserDashboard(props) {
 
     useEffect(() => {
         let username = searchParams.get("user");
+        let loggedUser =  localStorage.getItem("currentUser");
         let closeModal = searchParams.get("closeModal");
         if(closeModal) {
             window.location.href = '/userProfile?user=' + username;
@@ -28,6 +30,12 @@ export default function UserDashboard(props) {
                 if(resp.status === 200) {
                     let obj = resp.data;
                     setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
+                }
+            });
+            ClimateCognizeService.getUserInfo(loggedUser).then((resp) => {
+                if(resp.status === 200) {
+                    let obj = resp.data;
+                    setLoggedInUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
                 }
             });
             ClimateCognizeService.getDatasetsByUser(username).then((resp) => {
@@ -56,22 +64,57 @@ export default function UserDashboard(props) {
         }
     });
 
+    function getDatasets() {
+        let ds = datasets;
+        if(loggedInUser.isPremium) {
+            ds = ds.filter(d => d['private'] === false || d['private'] === true && d['author'] == loggedInUser.username);
+        }
+        else {
+            ds = ds.filter(d => d['private'] === false);
+        }
+        return ds;
+    }
+
     const MyDocument = () => (
         <Document>
           <Page size="A4" style={styles.page}>
             <View style={styles.layout}>
-            <Text>Statistics for user <View style={{fontWeight: "bold"}}> {user.name} {user.surname} </View> - {user.username}</Text>
+            <Text style={{borderBottom: "1px solid black" , paddingBottom: "10"}}>Statistics for user {user.name} {user.surname} - {user.username}</Text>
             </View>
 
-            <Text>------------------------------------</Text>
-            <View style={styles.layout}><Text>Number of datasets: {datasets.length}</Text></View>
             
+            <View style={styles.layout}><Text>Number of datasets: {datasets.length}</Text></View>
+            <div style={{borderBottom: "1px solid black", paddingBottom: "10"}}>
             <Text>Total number of likes: {datasets.map(d => d['numLikes']).reduce((partialSum, a) => partialSum + a, 0)}</Text>
             <Text>Total number of downloads: {datasets.map(d => d['numDownloads']).reduce((partialSum, a) => partialSum + a, 0)}</Text>
-            <Text>------------------------------------</Text>
+            </div>
+            <div style={{borderBottom: "1px solid black", paddingBottom: "10"}}>
             <Text>Mean number of likes per dataset: {datasets.map(d => d['numLikes']).reduce((partialSum, a) => partialSum + a, 0) / datasets.length}</Text>
             <Text>Mean number of downloads per dataset: {datasets.map(d => d['numDownloads']).reduce((partialSum, a) => partialSum + a, 0) / datasets.length}</Text>
+            </div>
             
+            <Text style={{borderBottom: "1px solid black" , paddingBottom: "10"}}>All datasets:</Text>
+            {datasets.map((ds, index) => {
+                return (
+                    <>
+                    <Text>{ds['name']}</Text>
+                    <View style={{paddingLeft: "20", borderBottom: "1px solid black" , paddingBottom: "10"}}>
+                    {ds['columns'].map((col, index) => {
+                        return (
+                            <>
+                            <div style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
+                            <Text>Column: </Text>
+                            <Text>{col}</Text>
+                            <Text>{ds['types'][index]}</Text>
+                            
+                            </div>
+                            </>
+                        );
+                    })}
+                    </View>
+                    </>
+                );
+            })}
           </Page>
         </Document>
       );
@@ -138,7 +181,7 @@ export default function UserDashboard(props) {
                         </svg> </span> Datasets</p>
 
                         {datasets.length == 0 && <p className='text-muted'>None created yet</p>}
-                        {datasets.map((dataset, index) => {
+                        {getDatasets().map((dataset, index) => {
                             return (
                                 
                                 // style={{width: "fit-content"}}
@@ -160,6 +203,9 @@ export default function UserDashboard(props) {
                                             </svg> <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                                                 <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
                                             </svg> {dataset['numLikes']}</span></small>
+
+                                            {dataset['private'] && loggedInUser.isPremium && dataset['author'] === loggedInUser.username && <small style={{marginTop: "-1em"}} class="float-end d-inline-flex mb-3 px-2 py-1 me-2 fw-semibold text-dark app-primary-bg-color bg-opacity-10 border border-success border-opacity-10 rounded-2">
+                                    PRIVATE </small>}
                                     </div>
                                 </div>
                                 </div>
@@ -169,8 +215,8 @@ export default function UserDashboard(props) {
                 </div>
             </div>
 
-               <div className='container'>
-                {requestedStatistics && <PDFViewer>
+               <div className='container pt-5 pb-5' style={{height: "100vh"}}>
+                {requestedStatistics && <PDFViewer width={"100%"} height={"100%"}>
                     <MyDocument />
                 </PDFViewer>}
                </div>

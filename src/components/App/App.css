@@ -206,6 +206,10 @@ button.profile-btns:hover {
   background-color: #B4D4D1 !important;
 }
 
+td.td-editor:hover {
+  border: 1px solid black;
+}
+
 .header-div {
   background-image: url('https://visme.co/blog/wp-content/uploads/climate-change-facts-header-wide.gif');
   background-position: center;

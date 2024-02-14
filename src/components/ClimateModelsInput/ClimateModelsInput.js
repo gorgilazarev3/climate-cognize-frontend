@@ -731,14 +731,14 @@ Selection of model for the task */}
             </Step>
           
         </Stepper>
-        {/* {this.state.activeStep === 2 && (
+        {this.state.activeStep === 2 && (this.state.datasetResponse.length > 0 || this.state.response.label.length > 0) && (
           <Paper square elevation={0} sx={{ p: 3 }}>
-            <Typography>All steps completed - you&apos;re finished</Typography>
+            {/* <Typography>All steps completed - you&apos;re finished</Typography> */}
             <Button onClick={this.handleReset} sx={{ mt: 1, mr: 1 }}>
-              Reset
+              Do another prediction
             </Button>
           </Paper>
-        )} */}
+        )}
       </Box>
 
 {/* Selection of task */}

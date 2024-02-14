@@ -71,7 +71,7 @@ const Login = (props) => {
                                onChange={handleChange}
                         />
                     </div>
-                    <button id="submit" type="submit" className="mt-5 btn btn-app app-primary-bg-color">Log in</button>
+                    <button id="submit" type="submit" className="mt-5 btn btn-app app-primary-bg-color border border-dark-subtle">Log in</button>
                 </form>
             </div>
         </div>

@@ -34,7 +34,7 @@ const Header = (props) => {
 </ul>
                                 </div>);
   } else {
-      authenticate = (          <><Link to="/login" type="button" class="btn app-dark-color app-secondary-bg-color me-2 btn-app">Login</Link><Link to="/register" type="button" class="btn text-white app-primary-bg-color btn-app">Sign-up</Link></>);
+      authenticate = (          <><Link to="/login" type="button" class="btn app-dark-color app-secondary-bg-color me-2 btn-app border border-secondary-subtle">Login</Link><Link to="/register" type="button" class="btn text-white app-primary-bg-color btn-app border border-dark-subtle">Sign-up</Link></>);
   }
 
 
