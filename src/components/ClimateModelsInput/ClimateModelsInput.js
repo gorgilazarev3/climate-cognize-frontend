@@ -1012,7 +1012,7 @@ Selection of model for the task */}
 <p>All that you need to do to help us is give consent so that your data can be used in this dataset and annotate the correct label in case the model predicted the wrong label.</p>
 
 {(this.state.dataConsent == null) && <div className="row d-flex flex-row "><a onClick={this.handleConsent} data-consent="yes" role="button" className="pe-auto app-success-color me-3 text-underline d-inline">Yes, I consent</a> <a onClick={this.handleConsent} role="button" data-consent="no" className="pe-auto text-danger me-3 text-underline d-inline">No, I do not consent</a></div>}
-{(this.state.dataConsent) && <div className="mt-5 w-50">
+{(this.state.dataConsent) && <div className="mt-5 w-50 mx-auto">
   <p>Please select the correct label for your input</p>
   <div className="row mb-3 mt-3">Real label:</div>
   <form onSubmit={this.handleSubmitToDataset}>
@@ -1075,8 +1075,85 @@ Selection of model for the task */}
 </div>}
 </div>
 
+<hr></hr>
 
-</div>
+            <div className="home-info-div mt-5 mb-5">
+
+              <div className="container text-start">
+                <div className="row">
+                  
+                  <div className="col-1"><img src='images\climate-change.png' className='ms-5 d-inline' style={{width: "3em"}}></img></div>
+                  <div className="col-5"><h3 className="h3 d-inline">ClimateCognize Basic Membership</h3> 
+                  <small class="float-end d-inline-flex mb-3 px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">free</small>
+                  
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <h5 className="text-muted">ClimateCognize is the ultimate interface for all climate-related NLP models and datasets.</h5>
+                    <h5 className="text-muted">Join the community today and start exploring, experimenting and collaborating with the Machine Learning technology.</h5>
+                  </div>
+                  <div className="col-2">
+                    <a type="button" className="btn btn-dark rounded-3 py-2 link-app" href="/register">➞ Sign up</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr></hr>
+
+            <div className="pro-info bg-dark full-width text-start pt-2 pb-2">
+              <div className="container mt-5 mb-5 border border-light rounded-4 border-opacity-50 ps-5 shadow">
+                <div className="row pt-5 pb-5">
+                  <div className="col-5">
+                  <h2 className="text-white d-inline me-3 fs-italic">Pro Account</h2>
+                  <small class="pro-badge fs-4 d-inline-flex mb-3 px-2 py-1 fw-semibold text-light ">PRO</small>
+
+                  </div>
+                  <div className="col-2">
+
+                  </div>
+
+                </div>
+                <div className="row text-light">
+                  <div className="col">
+                    <p className=" fs-5">
+                      One time subscription to access exclusive features.
+                    </p>
+                  </div>
+                  <div className="col">
+                    <ul style={{ listStyleType: 'none' }}>
+                      <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
+                      </svg> Early access to new features</li>
+                      <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
+                      </svg> Get a pro badge on your profile</li>
+                    </ul>
+                  </div>
+                  <div className="col">
+                  <ul style={{ listStyleType: 'none' }}>
+                  <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
+                      </svg> Private repositories for datasets</li>
+                      <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
+                      </svg> Advanced reports for your datasets</li>
+                    </ul>
+
+                  </div>
+                </div>
+                <div className="row pb-5">
+                    <div className="col-2">
+                      <a type="button" className="btn btn-light rounded-3 py-2 link-app" href="/pricing">➞ Get PRO</a>
+
+                    </div>
+                </div>
+                
+              </div>
+            </div>
+
+          </div>
         );
 
     }

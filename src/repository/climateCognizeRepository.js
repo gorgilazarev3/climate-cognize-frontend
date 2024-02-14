@@ -260,6 +260,10 @@ const ClimateCognizeService = {
         return axios.put(`/datasets/downloadDataset/${id}`);
     },
 
+    deleteDataset: (id) => {
+        return axios.delete(`/datasets/deleteDataset/${id}`);
+    },
+
     createNewDataset: (author, name, description, isPrivate, language, task, split, columns, rows, tags, types) => {
         return axios.post("/datasets/createNewDataset", {"author": author, "name": name, "description": description, "isPrivate": isPrivate, "language": language, "task": task, "split": split, "columns": JSON.stringify(columns), "rows": JSON.stringify(rows), "tags": JSON.stringify(tags), "types": JSON.stringify(types)});
     },

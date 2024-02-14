@@ -11,12 +11,15 @@ export default function Pricing(props) {
 
     useEffect(() => {
         let username = localStorage.getItem("currentUser");
-        ClimateCognizeService.getUserInfo(username).then((resp) => {
+        if(username != null) {
+          ClimateCognizeService.getUserInfo(username).then((resp) => {
             if(resp.status === 200) {
                 let obj = resp.data;
                 setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
             }
         });
+        }
+
     }, []);
 
     async function handleToken(token) {
@@ -71,8 +74,12 @@ export default function Pricing(props) {
 </div>
 
 <div className="col">
-<div class="card mt-5 text-start" style={{cursor: "pointer"}}>
-<div className="card-header bg-white dataset-card">
+<div onClick={() => { 
+                localStorage.getItem("currentUser") == null &&
+                navigate('/register')
+            
+            }} class="card mt-5 text-start" style={{cursor: "pointer"}}>
+<div  className="card-header bg-white dataset-card">
     <h4 class="card-title">ClimateCognize Pro</h4>
   <h6 className="card-subtitle text-muted">Contribute to the improvement of our services</h6>
 </div>
@@ -81,6 +88,9 @@ export default function Pricing(props) {
             <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
   <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
 </svg> Early access to new features</li>
+<li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+  <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+</svg> Get a pro badge on your profile</li>
             <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
   <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
 </svg> Private repositories for datasets</li>
@@ -93,12 +103,13 @@ export default function Pricing(props) {
     <h6 className="text-muted">Subscribe</h6>
     <h4 class="">$9.99</h4>
 
-{ !user.isPremium ?
+{ !user.isPremium && user.username != "" ?
     <Stripe
 stripeKey="pk_test_51NGTdOC4i333N3s4vpyRmnMjUbfOwMp5i3lwWcHPiY4VOPw0NDJs3sC1AHqOtOOr73BXV1tbxA4TnEv6EGAGT3l700k7mHF2Zz"
 token={handleToken}
 description="Subscription for ClimateCognize Pro Memebership"
-/> : "You are subscribed to this plan"
+label="➞ Get PRO"
+/> : user.isPremium && user.username != "" ? "You are subscribed to this plan" : null
 }
   </div>
 </div>
