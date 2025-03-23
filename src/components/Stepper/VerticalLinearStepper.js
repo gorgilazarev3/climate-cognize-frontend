@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-export default function VerticalLinearStepper(props) {
+export default VerticalLinearStepper = (props) => {
 
     // steps format:
     // const steps = [

@@ -2,10 +2,11 @@ import React, { useState, useReducer, useEffect } from 'react';
 import Papa from "papaparse";
 import { CSVLink } from "react-csv";
 import ReactPaginate from "react-paginate";
-import ClimateCognizeService from '../../../repository/climateCognizeRepository';
+
+import ClimateCognizeService from '../../../services/climateCognizeService';
 import User from '../../../models/User';
 
-function DatasetCreator(props) {
+const DatasetCreator = (props) => {
     const [columns, setColumns] = useState([]);
     const [inputs, setInputs] = useState([[]]);
     const [inputsData, setInputsData] = useState([[]]);
@@ -16,7 +17,7 @@ function DatasetCreator(props) {
     const [datasetName, setDatasetName] = useState("");
     const [isPrivate, setDatasetPrivacy] = useState(false);
     const [tags, setTags] = useState([]);
-    const [user, setUser] = useState(new User("","","",""));
+    const [user, setUser] = useState(new User("", "", "", ""));
 
     const offset = pageSize * page;
     const nextPageOffset = offset + pageSize;
@@ -25,33 +26,194 @@ function DatasetCreator(props) {
     useEffect(() => {
         let username = localStorage.getItem("currentUser");
         ClimateCognizeService.getUserInfo(username).then((resp) => {
-            if(resp.status === 200) {
+            if (resp.status === 200) {
                 let obj = resp.data;
-                setUser({username: obj['username'], name: obj['name'], surname:  obj['surname'], role: obj['role'], isPremium: obj['premium']});
+                setUser({ username: obj['username'], name: obj['name'], surname: obj['surname'], role: obj['role'], isPremium: obj['premium'] });
             }
         });
     }, []);
 
 
-    function addEditIcon(e) {
-        // let icon = document.createElement("span");
-        // icon.classList.add('d-inline');
-        // icon.textContent = "✐";
-        // icon.setAttribute('viewBox', "0 0 16 16");
-        // icon.setAttribute('width', "16");
-        // icon.setAttribute('height', "16");
-        // icon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        // icon.setAttribute('fill','currentColor');
-        // icon.classList.add('bi','bi-pencil-square');
-        // icon.innerHTML = `  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-        // <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>`;
-        e.target.classList.add('border','border-2', 'border-dark');
-      }
+    const addEditIcon = (e) => {
+        e.target.classList.add('border', 'border-2', 'border-dark');
+    }
 
-      function removeEditIcon(e) {
-        
-        e.target.classList.remove('border','border-2', 'border-dark');
-      }
+    const removeEditIcon = (e) => {
+
+        e.target.classList.remove('border', 'border-2', 'border-dark');
+    }
+
+    const handlePageClick = (data) => {
+        let selected = data.selected;
+        setPage(selected);
+    }
+
+    const getNodeText = (
+        node
+    ) => {
+        if (!node) {
+            return ''
+        }
+
+        if (typeof node === 'string' || typeof node === 'number') {
+            return node.toString()
+        }
+
+        if (Array.isArray(node)) {
+            return node.map(getNodeText).join('')
+        }
+
+        return getNodeText(node.props.children)
+    }
+
+    const handleCreateDataset = (e) => {
+        e.preventDefault();
+
+        let description = document.getElementById("description-input").value;
+        let language = document.getElementById("language-input").value;
+        let task = document.getElementById("task-select").value;
+        let cols = columns.map(col => col['col_name']);
+        let types = columns.map(col => col['col_type']);
+        let rows = [];
+        for (let index = 0; index < inputsData.length; index++) {
+            const row = inputsData[index];
+            let entries = [];
+            row.forEach(element => {
+                entries.push(element);
+            });
+            rows[index] = { "entries": entries };
+        }
+        ClimateCognizeService.createNewDataset(localStorage.getItem("currentUser"), datasetName, description, isPrivate, language, task, "train", cols, rows, tags, types).then((resp) => {
+            if (resp.status === 200) {
+                window.location.href = "/datasets";
+            }
+            else {
+                console.log(resp);
+            }
+        });
+    }
+
+    const handleTagInput = (e) => {
+        if (e.key === "Enter") {
+            tags.push(document.getElementById("tags-input").value);
+            document.getElementById("tags-input").value = "";
+            forceUpdate();
+        }
+    }
+
+    const getCsvData = () => {
+        return [columns.map(col => col.col_name), ...inputsData];
+    }
+
+    const getInputsPage = (offset, nextPageOffset) => {
+        return inputs.filter((input, index) => {
+            return index >= offset && index < nextPageOffset;
+        })
+    }
+
+    const addNewRow = () => {
+        let newInput = [];
+        let newInputData = [];
+        for (let i = 0; i < columns.length; i++) {
+            // newInput.push(<DatasetInput isEntered='false' id={inputs.length}></DatasetInput>);
+            if (columns[i].col_type === 'string') {
+                newInput.push(<input className='form-control' type='text' id={'dataset-input-' + numRows + '-' + i} onKeyDown={(e) => saveInput(e, numRows, i)}></input>);
+                newInputData.push("");
+            }
+            else {
+                newInputData.push("");
+                newInput.push(<input className='form-control' type='number' id={'dataset-input-' + numRows + '-' + i} onKeyDown={(e) => saveInput(e, numRows, i)}></input>);
+            }
+
+        }
+        if (columns.length !== 0) {
+            inputs[numRows] = newInput;
+            inputsData[numRows] = newInputData;
+            setNumRows(numRows + 1);
+        }
+
+    }
+
+    const addColumn = (col) => {
+        if (columns.length === 0) {
+            document.getElementById('import-dataset-div').style.display = 'none';
+            document.getElementById('import-dataset-divider').style.display = 'none';
+        }
+        for (let i = 0; i < numRows; i++) {
+            while (inputs[i].length <= columns.length) {
+                let j = inputs[i].length;
+                inputs[i].push(<input className='form-control' type='text' id={'dataset-input-' + i + '-' + j} onKeyDown={(e) => saveInput(e, i, j)}></input>);
+                inputsData[i].push("");
+            }
+        }
+        setColumns([...columns, col]);
+        document.getElementById('newcol').value = "";
+
+    }
+
+    const saveInput = (event, idRow, idCol) => {
+        if (event.key === 'Enter') {
+            let id = 'dataset-input-' + idRow + '-' + idCol;
+            let inputValue = document.getElementById(id).value;
+            inputs[idRow][idCol] = <p onClick={() => changeInput(idRow, idCol)} data-value={inputValue}>{inputValue}</p>;
+            inputsData[idRow][idCol] = inputValue;
+            forceUpdate();
+        }
+
+    }
+
+    const changeInput = (idRow, idCol) => {
+        let inputValue = inputs[idRow][idCol];
+        inputs[idRow][idCol] = <input className='form-control' type='text' id={'dataset-input-' + idRow + '-' + idCol} onKeyDown={(e) => saveInput(e, idRow, idCol)} defaultValue={inputValue.props['data-value']}></input>;
+        inputsData[idRow][idCol] = "";
+        forceUpdate();
+
+    }
+
+    const importFromCsv = (e) => {
+        e.preventDefault();
+        let dataset_file = document.getElementById("import-dataset-table").files[0];
+        Papa.parse(dataset_file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                let data = results.data;
+                let cols = Object.keys(data[0]);
+                for (let i = 0; i < data.length; i++) {
+                    for (let j = 0; j < cols.length; j++) {
+                        let parsedNum = parseFloat(data[i][cols[j]]);
+                        if (!isNaN(parsedNum)) {
+                            data[i][cols[j]] = parsedNum;
+                        }
+                    }
+                }
+                for (let i = 0; i < cols.length; i++) {
+                    cols[i] = { 'col_name': cols[i], 'col_type': typeof (data[0][cols[i]]) };
+                }
+                setColumns(cols);
+                for (let i = 0; i < data.length; i++) {
+                    let newRow = [];
+                    let newRowData = [];
+                    let iParam = i;
+                    for (let j = 0; j < cols.length; j++) {
+                        let jParam = j;
+                        let dataValue = data[i][cols[j].col_name];
+                        newRowData[j] = dataValue;
+                        newRow[j] = <p onClick={() => changeInput(iParam, jParam)} data-value={dataValue}>{dataValue}</p>;
+                    }
+                    data[i] = newRow;
+                    inputs[i] = data[i];
+                    inputsData[i] = newRowData;
+                }
+                setNumRows(data.length);
+                setInputs(data);
+                forceUpdate();
+            },
+        });
+
+        document.getElementById('import-dataset-div').style.display = 'none';
+        document.getElementById('import-dataset-divider').style.display = 'none';
+    }
 
     return (
         <div className='custom-table-responsive'>
@@ -76,7 +238,7 @@ function DatasetCreator(props) {
                     <label class="form-check-label" for="publicDatasetOptions">
                         <div className='row'>
                             <div className='col-2'>
-                                <svg style={{color: "lightgrey"}} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-database" viewBox="0 0 16 16">
+                                <svg style={{ color: "lightgrey" }} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-database" viewBox="0 0 16 16">
                                     <path d="M4.318 2.687C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4c0-.374.356-.875 1.318-1.313M13 5.698V7c0 .374-.356.875-1.318 1.313C10.766 8.729 9.464 9 8 9s-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777A5 5 0 0 0 13 5.698M14 4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16s3.022-.289 4.096-.777C13.125 14.755 14 14.007 14 13zm-1 4.698V10c0 .374-.356.875-1.318 1.313C10.766 11.729 9.464 12 8 12s-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10s3.022-.289 4.096-.777A5 5 0 0 0 13 8.698m0 3V13c0 .374-.356.875-1.318 1.313C10.766 14.729 9.464 15 8 15s-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13s3.022-.289 4.096-.777c.324-.147.633-.323.904-.525" />
                                 </svg>
                             </div>
@@ -90,21 +252,21 @@ function DatasetCreator(props) {
                     </label>
                 </div>
                 <div class="form-check text-start">
-                    
+
                     <input onClick={() => setDatasetPrivacy(true)} disabled={!user.isPremium} class="form-check-input" type="radio" name="privacyDatasetOptions" id="privateDatasetOptions"></input>
                     <label class="form-check-label" for="privateDatasetOptions">
-                    <div className='row'>
+                        <div className='row'>
                             <div className='col-2'>
-                                <svg style={{color: "lightgrey"}} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-database-lock" viewBox="0 0 16 16">
-                                <path d="M13 5.698a5 5 0 0 1-.904.525C11.022 6.711 9.573 7 8 7s-3.022-.289-4.096-.777A5 5 0 0 1 3 5.698V7c0 .374.356.875 1.318 1.313C5.234 8.729 6.536 9 8 9c.666 0 1.298-.056 1.876-.156-.43.31-.804.693-1.102 1.132A12 12 0 0 1 8 10c-1.573 0-3.022-.289-4.096-.777A5 5 0 0 1 3 8.698V10c0 .374.356.875 1.318 1.313C5.234 11.729 6.536 12 8 12h.027a4.6 4.6 0 0 0-.017.8A2 2 0 0 0 8 13c-1.573 0-3.022-.289-4.096-.777A5 5 0 0 1 3 11.698V13c0 .374.356.875 1.318 1.313C5.234 14.729 6.536 15 8 15c0 .363.097.704.266.997Q8.134 16.001 8 16c-1.573 0-3.022-.289-4.096-.777C2.875 14.755 2 14.007 2 13V4c0-1.007.875-1.755 1.904-2.223C4.978 1.289 6.427 1 8 1s3.022.289 4.096.777C13.125 2.245 14 2.993 14 4v4.256a4.5 4.5 0 0 0-1.753-.249C12.787 7.654 13 7.289 13 7zm-8.682-3.01C3.356 3.124 3 3.625 3 4c0 .374.356.875 1.318 1.313C5.234 5.729 6.536 6 8 6s2.766-.27 3.682-.687C12.644 4.875 13 4.373 13 4c0-.374-.356-.875-1.318-1.313C10.766 2.271 9.464 2 8 2s-2.766.27-3.682.687Z"/>
-  <path d="M9 13a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1"/>
+                                <svg style={{ color: "lightgrey" }} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-database-lock" viewBox="0 0 16 16">
+                                    <path d="M13 5.698a5 5 0 0 1-.904.525C11.022 6.711 9.573 7 8 7s-3.022-.289-4.096-.777A5 5 0 0 1 3 5.698V7c0 .374.356.875 1.318 1.313C5.234 8.729 6.536 9 8 9c.666 0 1.298-.056 1.876-.156-.43.31-.804.693-1.102 1.132A12 12 0 0 1 8 10c-1.573 0-3.022-.289-4.096-.777A5 5 0 0 1 3 8.698V10c0 .374.356.875 1.318 1.313C5.234 11.729 6.536 12 8 12h.027a4.6 4.6 0 0 0-.017.8A2 2 0 0 0 8 13c-1.573 0-3.022-.289-4.096-.777A5 5 0 0 1 3 11.698V13c0 .374.356.875 1.318 1.313C5.234 14.729 6.536 15 8 15c0 .363.097.704.266.997Q8.134 16.001 8 16c-1.573 0-3.022-.289-4.096-.777C2.875 14.755 2 14.007 2 13V4c0-1.007.875-1.755 1.904-2.223C4.978 1.289 6.427 1 8 1s3.022.289 4.096.777C13.125 2.245 14 2.993 14 4v4.256a4.5 4.5 0 0 0-1.753-.249C12.787 7.654 13 7.289 13 7zm-8.682-3.01C3.356 3.124 3 3.625 3 4c0 .374.356.875 1.318 1.313C5.234 5.729 6.536 6 8 6s2.766-.27 3.682-.687C12.644 4.875 13 4.373 13 4c0-.374-.356-.875-1.318-1.313C10.766 2.271 9.464 2 8 2s-2.766.27-3.682.687Z" />
+                                    <path d="M9 13a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1" />
                                 </svg>
                             </div>
                             <div className='col-10'>
                                 <div className='row'>
                                     <p className='fw-bold mb-1'>Private</p>
                                     <small className='text-muted'>Only you (personal dataset) can see and use this dataset.</small>
-                                    {!user.isPremium && <small className='text-muted'>Only accounts with Pro Subscription can create private datasets.</small>  }
+                                    {!user.isPremium && <small className='text-muted'>Only accounts with Pro Subscription can create private datasets.</small>}
 
                                 </div>
                             </div>
@@ -136,7 +298,7 @@ function DatasetCreator(props) {
                     <hr></hr>
                 </div>
 
-                <div className='form-group w-25 m-auto row'>
+                <div className='form-group w-25 m-auto row mb-5'>
                     <div className='col'>
                         <label htmlFor='newcol' className='form-label'>Column Name</label>
                         <input type='text' name='newcol' id='newcol' className='form-control'></input>
@@ -208,7 +370,6 @@ function DatasetCreator(props) {
                 {numRows > 0 && columns.length > 0 && <ReactPaginate previousLabel="back"
                     nextLabel="next"
                     breakLabel={<a href="/#">...</a>}
-                    // breakClassName={"break-me"}
                     pageClassName={"page-item"}
                     pageLinkClassName={"page-link"}
                     previousClassName={"page-item"}
@@ -235,7 +396,7 @@ function DatasetCreator(props) {
                             <label className='form-label' htmlFor='description-input'>Dataset Description</label>
                             <textarea rows={3} cols={10} className='form-control mb-5 w-75 mx-auto' id='description-input' name='description-input'></textarea>
                         </div>
-                        
+
                         <div className='row mt-5 mb-5'>
                             <div className='col'>
                                 <label className='form-label' htmlFor='language-input'>Language</label>
@@ -264,7 +425,7 @@ function DatasetCreator(props) {
                             <div className='col'>
                                 <p>Tags:</p>
                                 <div id='tags-inputted' className='row row-cols-6 rounded-3'>
-                                {tags.map((tag, index) => {
+                                    {tags.map((tag) => {
                                         return (
                                             <div><small class="justify-content-center float-end d-inline-flex mb-3 px-2 py-1 fw-semibold text-success bg-success bg-opacity-10 border border-success border-opacity-10 rounded-2">{tag}</small></div>
                                         );
@@ -288,201 +449,6 @@ function DatasetCreator(props) {
         </div>
     );
 
-    function handlePageClick(data) {
-        let selected = data.selected;
-        setPage(selected);
-    }
-
-    function getNodeText(
-        node
-    ) {
-        if (!node) {
-            return ''
-        }
-
-        if (typeof node === 'string' || typeof node === 'number') {
-            return node.toString()
-        }
-
-        if (Array.isArray(node)) {
-            return node.map(getNodeText).join('')
-        }
-
-        return getNodeText(node.props.children)
-    }
-
-    function handleCreateDataset(e) {
-        e.preventDefault();
-
-        let description = document.getElementById("description-input").value;
-        let language = document.getElementById("language-input").value;
-        let task = document.getElementById("task-select").value;
-        let cols = columns.map(col => col['col_name']);
-        let types = columns.map(col => col['col_type']);
-        let rows = [];
-        for (let index = 0; index < inputsData.length; index++) {
-            const row = inputsData[index];
-            let entries = [];
-            row.forEach(element => {
-                entries.push(element);
-            });
-            rows[index] = {"entries" : entries};
-            // rows[index] = entries;
-            
-        }
-        ClimateCognizeService.createNewDataset(localStorage.getItem("currentUser"), datasetName, description, isPrivate, language, task, "train", cols, rows, tags, types).then((resp) => {
-            if(resp.status === 200) {
-                window.location.href = "/datasets";
-            }
-            else {
-                console.log(resp);
-            }
-        });
-    }
-
-    function handleTagInput(e) {
-        if(e.key === "Enter") {
-            tags.push(document.getElementById("tags-input").value);
-            document.getElementById("tags-input").value = "";
-            forceUpdate();
-        }
-    }
-
-    function getCsvData() {
-        return [columns.map(col => col.col_name), ...inputsData];
-    }
-
-    function getInputsPage(offset, nextPageOffset) {
-        return inputs.filter((input, index) => {
-            return index >= offset && index < nextPageOffset;
-        })
-    }
-
-    function addNewRow() {
-        let newInput = [];
-        let newInputData = [];
-        for (let i = 0; i < columns.length; i++) {
-            // newInput.push(<DatasetInput isEntered='false' id={inputs.length}></DatasetInput>);
-            if (columns[i].col_type === 'string') {
-                newInput.push(<input className='form-control' type='text' id={'dataset-input-' + numRows + '-' + i} onKeyDown={(e) => saveInput(e, numRows, i)}></input>);
-                newInputData.push("");
-            }
-            else {
-                newInputData.push("");
-                newInput.push(<input className='form-control' type='number' id={'dataset-input-' + numRows + '-' + i} onKeyDown={(e) => saveInput(e, numRows, i)}></input>);
-            }
-
-        }
-        if (columns.length !== 0) {
-            inputs[numRows] = newInput;
-            inputsData[numRows] = newInputData;
-            setNumRows(numRows + 1);
-        }
-
-    }
-
-    function addColumn(col) {
-        if (columns.length === 0) {
-            document.getElementById('import-dataset-div').style.display = 'none';
-            document.getElementById('import-dataset-divider').style.display = 'none';
-        }
-        for (let i = 0; i < numRows; i++) {
-            while (inputs[i].length <= columns.length) {
-                let j = inputs[i].length;
-                inputs[i].push(<input className='form-control' type='text' id={'dataset-input-' + i + '-' + j} onKeyDown={(e) => saveInput(e, i, j)}></input>);
-                inputsData[i].push("");
-            }
-        }
-        setColumns([...columns, col]);
-        document.getElementById('newcol').value = "";
-
-    }
-
-    function saveInput(event, idRow, idCol) {
-        if (event.key === 'Enter') {
-            let id = 'dataset-input-' + idRow + '-' + idCol;
-            let inputValue = document.getElementById(id).value;
-            inputs[idRow][idCol] = <p onClick={() => changeInput(idRow, idCol)} data-value={inputValue}>{inputValue}</p>;
-            inputsData[idRow][idCol] = inputValue;
-            forceUpdate();
-        }
-
-    }
-
-    function changeInput(idRow, idCol) {
-        let inputValue = inputs[idRow][idCol];
-        inputs[idRow][idCol] = <input className='form-control' type='text' id={'dataset-input-' + idRow + '-' + idCol} onKeyDown={(e) => saveInput(e, idRow, idCol)} defaultValue={inputValue.props['data-value']}></input>;
-        inputsData[idRow][idCol] = "";
-        forceUpdate();
-
-    }
-
-    function importFromCsv(e) {
-        e.preventDefault();
-        let dataset_file = document.getElementById("import-dataset-table").files[0];
-        Papa.parse(dataset_file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: function (results) {
-                let data = results.data;
-                let cols = Object.keys(data[0]);
-                for (let i = 0; i < data.length; i++) {
-                    for (let j = 0; j < cols.length; j++) {
-                        let parsedNum = parseFloat(data[i][cols[j]]);
-                        if (!isNaN(parsedNum)) {
-                            data[i][cols[j]] = parsedNum;
-                        }
-                    }
-                }
-                for (let i = 0; i < cols.length; i++) {
-                    cols[i] = { 'col_name': cols[i], 'col_type': typeof (data[0][cols[i]]) };
-                }
-                setColumns(cols);
-                for (let i = 0; i < data.length; i++) {
-                    let newRow = [];
-                    let newRowData = [];
-                    let iParam = i;
-                    for (let j = 0; j < cols.length; j++) {
-                        let jParam = j;
-                        let dataValue = data[i][cols[j].col_name];
-                        newRowData[j] = dataValue;
-                        newRow[j] = <p onClick={() => changeInput(iParam, jParam)} data-value={dataValue}>{dataValue}</p>;
-                    }
-                    data[i] = newRow;
-                    inputs[i] = data[i];
-                    inputsData[i] = newRowData;
-                }
-                setNumRows(data.length);
-                setInputs(data);
-                forceUpdate();
-            },
-        });
-
-        document.getElementById('import-dataset-div').style.display = 'none';
-        document.getElementById('import-dataset-divider').style.display = 'none';
-
-        // let inputPosition = document.getElementById("import-dataset-input-position").value;
-        // let data = new FormData();
-        // data.append('dataset_file', dataset_file);
-        // this.state.datasetResponse = [];
-        //           this.setState({
-        //           "datasetResponse" : [...this.state.datasetResponse],
-        //       });
-        // ClimateCognizeService.importDatasetFromCSV(data.get("dataset_file"), this.state.selectedTask, inputPosition).then((resp) => {
-        //   if(resp.status === 200) {
-        //     let responses = resp.data;
-        //     for(let entry of responses) {
-        //       let datasetEntry = new ClimateDatasetResponse();
-        //       datasetEntry.input = entry['input'];
-        //       datasetEntry.predictedLabel = entry['label'];
-        //       this.state.datasetResponse.push(datasetEntry);
-        //       this.setState({
-        //           "datasetResponse" : [...this.state.datasetResponse],
-        //       });
-        //   }
-        //   }
-        // });
-    }
 }
 
 // function DatasetInput(isEntered, id) {

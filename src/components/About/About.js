@@ -1,4 +1,4 @@
-export default function About() {
+const About = () => {
     return (
         <div>
             <div className="full-width">
@@ -58,3 +58,5 @@ export default function About() {
         </div>
     );
 }
+
+export default About;
