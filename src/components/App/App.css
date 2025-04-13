@@ -258,7 +258,6 @@ td.td-editor:hover {
   border: 1px solid #282c34;
   cursor: pointer;
   background: transparent;
-  /* background-image: url('https://web.archive.org/web/20160312084140im_/http://splatoon.nintendo.com/assets/img/nav-bg-fill-blue.png?1443460871'); */
   background-image: url('/public/images/nav-btn-fill-dark.png');
   background-repeat: repeat-x;
   background-position: 0 -100%;
@@ -333,7 +332,6 @@ td.td-editor:hover {
   --card-line-height: 1.2em;
   --card-padding: 1em;
   --card-radius: 0.5em;
-  /* --color-green: #558309; */
   --app-primary-color: #B4D4D1;
   --color-gray: #e2ebf6;
   --color-dark-gray: #c4d1e1;
@@ -483,7 +481,6 @@ a.active:hover::before {
 }
 
 .plan-details {
-  /* border: var(--radio-border-width) solid var(--color-gray); */
   border-radius: var(--card-radius);
   cursor: pointer;
   display: flex;
@@ -500,10 +497,6 @@ a.active:hover::before {
   border: solid var(--color-gray);
   border-color: var(--app-primary-color);
 }
-
-/* .radio:focus ~ .plan-details {
-  box-shadow: 0 0 0 2px var(--color-dark-gray);
-} */
 
 .radio:disabled ~ .plan-details {
   color: var(--color-dark-gray);

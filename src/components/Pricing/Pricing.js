@@ -1,16 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import ClimateCognizeService from "../../repository/climateCognizeRepository";
 import Stripe from "react-stripe-checkout";
 import { useState, useEffect } from "react";
-import User from "../../models/User";
 
-export default function Pricing(props) {
+import ClimateCognizeService from "../../services/climateCognizeService";
+import User from "../../models/User";
+import { LocalStorageKeys } from "../../constants/localStorageKeys";
+import { AuthRoutes } from "../../constants/routes";
+
+const Pricing = () => {
 
     const navigate = useNavigate();
     const [user, setUser] = useState(new User("","","",""));
 
     useEffect(() => {
-        let username = localStorage.getItem("currentUser");
+        let username = localStorage.getItem(LocalStorageKeys.CURRENT_USER);
         if(username != null) {
           ClimateCognizeService.getUserInfo(username).then((resp) => {
             if(resp.status === 200) {
@@ -22,9 +25,9 @@ export default function Pricing(props) {
 
     }, []);
 
-    async function handleToken(token) {
+    const handleToken = async (token) => {
         let t = await ClimateCognizeService.handleToken(token);
-        ClimateCognizeService.subscribeToPro(localStorage.getItem("currentUser")).then((resp) => console.log(resp.data));
+        ClimateCognizeService.subscribeToPro(localStorage.getItem(LocalStorageKeys.CURRENT_USER));
         return t;
     }
 
@@ -45,8 +48,8 @@ export default function Pricing(props) {
             <div className="row row-cols-2">
 <div className="col">
 <div onClick={() => { 
-                localStorage.getItem("currentUser") == null &&
-                navigate('/register')
+                localStorage.getItem(LocalStorageKeys.CURRENT_USER) == null &&
+                navigate(AuthRoutes.REGISTER)
             
             }} class="card mt-5 text-start" style={{cursor: "pointer"}}>
 <div className="card-header bg-white">
@@ -75,8 +78,8 @@ export default function Pricing(props) {
 
 <div className="col">
 <div onClick={() => { 
-                localStorage.getItem("currentUser") == null &&
-                navigate('/register')
+                localStorage.getItem(LocalStorageKeys.CURRENT_USER) == null &&
+                navigate(AuthRoutes.REGISTER)
             
             }} class="card mt-5 text-start" style={{cursor: "pointer"}}>
 <div  className="card-header bg-white dataset-card">
@@ -121,3 +124,5 @@ label="➞ Get PRO"
         </div>
     );
 }
+
+export default Pricing;
