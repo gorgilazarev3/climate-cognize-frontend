@@ -1,9 +1,9 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ClimateCognizeService from '../../services/climateCognizeService';
 import ClimateMLModel from '../../models/ClimateMLModel';
 
-const ClimateMLModels = (props) => {
+const ClimateMLModels = () => {
     const [models, setModels] = useState([]);
     const [selectedModel, setSelectedModel] = useState("");
     const [message, setMessage] = useState("");
