@@ -165,7 +165,7 @@ const DatasetView = () => {
                             <span style={{ color: "darkgray" }} className="fs-6 ms-3">Tags: </span>
                             {dataset['tags'] != undefined && dataset['tags'].map((tag, index) => {
                                 return (
-                                    <small class="d-inline-flex mb-3 px-2 py-1 me-2 fw-semibold text-dark app-primary-bg-color bg-opacity-10 border border-success border-opacity-10 rounded-2">
+                                    <small key={`${tag}-${index}`} class="d-inline-flex mb-3 px-2 py-1 me-2 fw-semibold app-primary-bg-color bg-opacity-10 border border-success border-opacity-10 rounded-2 text-dark fw-bold">
                                         {tag}</small>
                                 );
                             })}

@@ -34,9 +34,11 @@ const Register = () => {
 
             <div className="climate-banner py-1 mb-5">
                 <div class=" mx-auto py-5 my-5 text-center mt-5 w-50">
-                    <h1 class="display-6 fw-bold">ClimateCognize</h1>
-                    <div class="col-lg-6 mx-auto">
-                        <p class="lead mb-4 app-dark-color fw-semibold">Register as a new user</p>
+                    <div className='app-primary-bg-color-opacity px-1 py-2 m-2 rounded-4'>
+                        <h1 class="display-6 fw-bold">ClimateCognize</h1>
+                        <div class="col-lg-6 mx-auto">
+                            <p class="lead mb-4 app-dark-color fw-semibold">Register as a new user</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,7 +96,7 @@ const Register = () => {
                             onChange={handleChange}
                         />
                     </div>
-                    <button id="submit" type="submit" className="mt-5 btn btn-app app-primary-bg-color border border-secondary-subtle">Register</button>
+                    <button id="submit" type="submit" className="mt-5 btn btn-app app-primary-bg-color border border-secondary-subtle text-light fw-bold">Register</button>
                 </form>
             </div>
         </div>

@@ -105,7 +105,12 @@ const UserSettings = () => {
             </button>
             <button onClick={selectButton} type="button" className="list-group-item list-group-item-action list-group-item-profile active" aria-current="true">Profile</button>
             <button onClick={selectButton} type="button" className="list-group-item list-group-item-action list-group-item-profile">Account</button>
-            <button type="button" className="list-group-item list-group-item-action list-group-item-profile">Sign out</button>
+            <button onClick={() => {
+              localStorage.removeItem(LocalStorageKeys.JWT)
+              localStorage.removeItem(LocalStorageKeys.CURRENT_USER)
+              localStorage.removeItem(LocalStorageKeys.USER_ROLE)
+              window.location.href = PublicRoutes.HOME;
+            }} type="button" className="list-group-item list-group-item-action list-group-item-profile">Sign out</button>
           </div>
         </div>
 
@@ -134,7 +139,7 @@ const UserSettings = () => {
                   <input className="form-control" type="text" id="lastName" defaultValue={user.surname}></input>
                 </div>
 
-                <button className="btn btn-app app-primary-bg-color text-light" type="submit">Save changes</button>
+                <button className="btn btn-app app-primary-bg-color text-light fw-bold" type="submit">Save changes</button>
               </form>
             </div>
           )}
@@ -147,7 +152,7 @@ const UserSettings = () => {
                   <label htmlFor="username" className="form-label">Username</label>
                   <input className="form-control" type="text" id="username" defaultValue={user.username}></input>
                 </div>
-                <button className="btn btn-app app-primary-bg-color text-light" type="submit">Save changes</button>
+                <button className="btn btn-app app-primary-bg-color text-light fw-bold" type="submit">Save changes</button>
               </form>
 
               <form onSubmit={changePasswordSettings} method="post">
@@ -166,7 +171,7 @@ const UserSettings = () => {
                   <input className="form-control" type="password" id="confirm-password" placeholder="Confirm new password"></input>
                 </div>
 
-                <button className="btn btn-app app-primary-bg-color text-light" type="submit">Save changes</button>
+                <button className="btn btn-app app-primary-bg-color text-light fw-bold" type="submit">Save changes</button>
               </form>
             </div>
           )}

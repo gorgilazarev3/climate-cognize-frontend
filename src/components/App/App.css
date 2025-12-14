@@ -95,6 +95,10 @@ button.list-group-item-action:hover {
   background-color: #B4D4D1 !important;
 }
 
+.app-primary-bg-color-opacity {
+  background-color: rgba(180, 212, 209, 0.75) !important;
+}
+
 .app-secondary-color {
   color: #E9F2F1 !important;
 }

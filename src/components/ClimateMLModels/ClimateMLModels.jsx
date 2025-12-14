@@ -101,14 +101,14 @@ const ClimateMLModels = () => {
                     </tr>
                 </thead>
                 <tbody className='table-group-divider'>
-                    {models.map((model) => {
+                    {models.map((model, index) => {
                         return (
-                            <tr>
+                            <tr key={`${model.model}-${index}`}>
                                 <td>{model.model}</td>
                                 <td>{model.currentF1Score}</td>
                                 <td>{model.previousF1Score}</td>
-                                <td><button onClick={() => trainModel(model.model)} className='btn btn-app app-primary-bg-color'>Train Model</button></td>
-                                <td><button onClick={() => evaluateModel(model.model)} className='btn btn-app app-success-bg-color text-white'>Evaluate Model</button></td>
+                                <td><button onClick={() => trainModel(model.model)} className='btn btn-app app-primary-bg-color text-light fw-bold'>Train Model</button></td>
+                                <td><button onClick={() => evaluateModel(model.model)} className='btn btn-app text-white app-dark-bg-color fw-bold'>Evaluate Model</button></td>
                             </tr>
                         );
                     })}
@@ -116,7 +116,7 @@ const ClimateMLModels = () => {
 
             </table>
 
-            <button className='btn btn-app app-primary-bg-color' onClick={refreshModels}>Refresh</button>
+            <button className='btn btn-app app-primary-bg-color text-light fw-bold' onClick={refreshModels}>Refresh</button>
 
             <p className='mt-5'>{message}</p>
 

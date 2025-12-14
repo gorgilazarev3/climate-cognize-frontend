@@ -36,7 +36,7 @@ export default function Contact() {
                                     <label htmlFor='message-contact' className='form-label fw-semibold'>Message</label>
                                     <textarea rows={3} name='message-contact' id='message-contact' className='form-control' placeholder="Your message here..."></textarea>
                             </div>
-                            <button className="btn btn-app app-primary-bg-color">Send Message</button>
+                            <button className="btn btn-app app-primary-bg-color text-light fw-bold">Send Message</button>
                         </div>
                     </div>
                 </div>
