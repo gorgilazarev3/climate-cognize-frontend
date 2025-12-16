@@ -115,7 +115,6 @@ const DatasetCreator = (props) => {
         let newInput = [];
         let newInputData = [];
         for (let i = 0; i < columns.length; i++) {
-            // newInput.push(<DatasetInput isEntered='false' id={inputs.length}></DatasetInput>);
             if (columns[i].col_type === 'string') {
                 newInput.push(<input className='form-control' type='text' id={'dataset-input-' + numRows + '-' + i} onKeyDown={(e) => saveInput(e, numRows, i)}></input>);
                 newInputData.push("");
@@ -127,8 +126,17 @@ const DatasetCreator = (props) => {
 
         }
         if (columns.length !== 0) {
-            inputs[numRows] = newInput;
-            inputsData[numRows] = newInputData;
+            setInputs(prev => {
+                const updated = [...prev];
+                updated[numRows] = [...newInput];
+                return updated;
+            });
+
+            setInputsData(prev => {
+                const updated = [...prev];
+                updated[numRows] = [...newInputData];
+                return updated;
+            });
             setNumRows(numRows + 1);
         }
 
@@ -139,81 +147,145 @@ const DatasetCreator = (props) => {
             document.getElementById('import-dataset-div').style.display = 'none';
             document.getElementById('import-dataset-divider').style.display = 'none';
         }
+        const newInputs = inputs.map(row => [...row]);
+        const newInputsData = inputsData.map(row => [...row]);
+
         for (let i = 0; i < numRows; i++) {
-            while (inputs[i].length <= columns.length) {
-                let j = inputs[i].length;
-                inputs[i].push(<input className='form-control' type='text' id={'dataset-input-' + i + '-' + j} onKeyDown={(e) => saveInput(e, i, j)}></input>);
-                inputsData[i].push("");
+            while (newInputs[i].length <= columns.length) {
+                const j = newInputs[i].length;
+
+                newInputs[i].push(
+                    <input
+                        className="form-control"
+                        type="text"
+                        id={`dataset-input-${i}-${j}`}
+                        onKeyDown={(e) => saveInput(e, i, j)}
+                    />
+                );
+
+                newInputsData[i].push("");
             }
         }
+
+        setInputs(newInputs);
+        setInputsData(newInputsData);
         setColumns([...columns, col]);
         document.getElementById('newcol').value = "";
 
     }
 
+
     const saveInput = (event, idRow, idCol) => {
-        if (event.key === 'Enter') {
-            let id = 'dataset-input-' + idRow + '-' + idCol;
-            let inputValue = document.getElementById(id).value;
-            inputs[idRow][idCol] = <p onClick={() => changeInput(idRow, idCol)} data-value={inputValue}>{inputValue}</p>;
-            inputsData[idRow][idCol] = inputValue;
-            forceUpdate();
-        }
+        if (event.key !== 'Enter') return;
 
-    }
+        const inputValue = event.target.value;
 
-    const changeInput = (idRow, idCol) => {
-        let inputValue = inputs[idRow][idCol];
-        inputs[idRow][idCol] = <input className='form-control' type='text' id={'dataset-input-' + idRow + '-' + idCol} onKeyDown={(e) => saveInput(e, idRow, idCol)} defaultValue={inputValue.props['data-value']}></input>;
-        inputsData[idRow][idCol] = "";
-        forceUpdate();
+        setInputs(prev => {
+            const next = prev.map(row => [...row]);
 
-    }
+            next[idRow][idCol] = (
+                <p
+                    onClick={() => changeInput(idRow, idCol)}
+                    data-value={inputValue}
+                >
+                    {inputValue}
+                </p>
+            );
 
-    const importFromCsv = (e) => {
-        e.preventDefault();
-        let dataset_file = document.getElementById("import-dataset-table").files[0];
-        Papa.parse(dataset_file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: function (results) {
-                let data = results.data;
-                let cols = Object.keys(data[0]);
-                for (let i = 0; i < data.length; i++) {
-                    for (let j = 0; j < cols.length; j++) {
-                        let parsedNum = parseFloat(data[i][cols[j]]);
-                        if (!isNaN(parsedNum)) {
-                            data[i][cols[j]] = parsedNum;
-                        }
-                    }
-                }
-                for (let i = 0; i < cols.length; i++) {
-                    cols[i] = { 'col_name': cols[i], 'col_type': typeof (data[0][cols[i]]) };
-                }
-                setColumns(cols);
-                for (let i = 0; i < data.length; i++) {
-                    let newRow = [];
-                    let newRowData = [];
-                    let iParam = i;
-                    for (let j = 0; j < cols.length; j++) {
-                        let jParam = j;
-                        let dataValue = data[i][cols[j].col_name];
-                        newRowData[j] = dataValue;
-                        newRow[j] = <p onClick={() => changeInput(iParam, jParam)} data-value={dataValue}>{dataValue}</p>;
-                    }
-                    data[i] = newRow;
-                    inputs[i] = data[i];
-                    inputsData[i] = newRowData;
-                }
-                setNumRows(data.length);
-                setInputs(data);
-                forceUpdate();
-            },
+            return next;
         });
 
-        document.getElementById('import-dataset-div').style.display = 'none';
-        document.getElementById('import-dataset-divider').style.display = 'none';
+        setInputsData(prev => {
+            const next = prev.map(row => [...row]);
+            next[idRow][idCol] = inputValue;
+            return next;
+        });
+    };
+
+    const changeInput = (idRow, idCol) => {
+        setInputs(prev => {
+            const next = prev.map(row => [...row]);
+
+            const value = next[idRow][idCol]?.props?.['data-value'] ?? "";
+
+            next[idRow][idCol] = (
+                <input
+                    className="form-control"
+                    type="text"
+                    onKeyDown={(e) => saveInput(e, idRow, idCol)}
+                    defaultValue={value}
+                />
+            );
+
+            return next;
+        });
+
+        setInputsData(prev => {
+            const next = prev.map(row => [...row]);
+            next[idRow][idCol] = "";
+            return next;
+        });
+    };
+
+
+const importFromCsv = (e) => {
+  e.preventDefault();
+
+  const file = e.target.elements["import-dataset-table"].files[0];
+  if (!file) return;
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: ({ data }) => {
+      if (!data.length) return;
+
+      // Parse numbers
+      data = data.map(row => {
+        const parsedRow = {};
+        Object.keys(row).forEach(key => {
+          const num = parseFloat(row[key]);
+          parsedRow[key] = isNaN(num) ? row[key] : num;
+        });
+        return parsedRow;
+      });
+
+      const cols = Object.keys(data[0]).map(col => ({
+        col_name: col,
+        col_type: typeof data[0][col]
+      }));
+
+      setColumns(cols);
+      setNumRows(data.length);
+
+      const newInputs = [];
+      const newInputsData = [];
+
+      for (let i = 0; i < data.length; i++) {
+        newInputs[i] = [];
+        newInputsData[i] = [];
+
+        for (let j = 0; j < cols.length; j++) {
+          const value = data[i][cols[j].col_name];
+
+          newInputsData[i][j] = value;
+
+          newInputs[i][j] = (
+            <p
+              onClick={() => changeInput(i, j)}
+              data-value={value}
+            >
+              {value}
+            </p>
+          );
+        }
+      }
+
+      setInputs(newInputs);
+      setInputsData(newInputsData);
     }
+  });
+};
 
     return (
         <div className='custom-table-responsive'>
@@ -274,7 +346,7 @@ const DatasetCreator = (props) => {
                     </label>
                 </div>
 
-                <button className='btn btn-app app-primary-bg-color mt-3' onClick={() => setDatasetName(document.getElementById('dataset-name').value)}>{'Create dataset'}</button>
+                <button className='btn btn-app app-primary-bg-color mt-3 text-light fw-bold' onClick={() => setDatasetName(document.getElementById('dataset-name').value)}>{'Create dataset'}</button>
             </div>
 
 
@@ -311,7 +383,7 @@ const DatasetCreator = (props) => {
                             <option>object</option>
                         </select>
                     </div>
-                    <button className='btn btn-app app-primary-bg-color mt-3' onClick={() => addColumn({ "col_name": document.getElementById('newcol').value, "col_type": document.getElementById('col-type-select').value })}>{columns.length > 0 ? 'Add column' : 'Create dataset table'}</button>
+                    <button className='btn btn-app app-primary-bg-color mt-3 fw-bold text-light' onClick={() => addColumn({ "col_name": document.getElementById('newcol').value, "col_type": document.getElementById('col-type-select').value })}>{columns.length > 0 ? 'Add column' : 'Create dataset table'}</button>
                 </div>
 
 
@@ -336,7 +408,7 @@ const DatasetCreator = (props) => {
                         <tr>
                             {columns.map((entry, index) => {
                                 return (
-                                    <th>{entry.col_name}<br></br><span className='text-muted fw-light'>{entry.col_type}</span></th>
+                                    <th key={`${entry.col_name}-${entry.col_type}-${index}`}>{entry.col_name}<br></br><span className='text-muted fw-light'>{entry.col_type}</span></th>
                                 );
                             })}
                         </tr>
@@ -346,10 +418,10 @@ const DatasetCreator = (props) => {
 
                         {getInputsPage(offset, nextPageOffset).map((entry, index) => {
                             return (
-                                <tr>
+                                <tr key={`${entry.toString()}-${index}`}>
                                     {entry.map((cell, index) => {
                                         return (
-                                            <td className='td-editor'>{cell}</td>
+                                            <td key={`${cell.toString()}-${index}`} className='td-editor'>{cell}</td>
                                         );
                                     })}
                                 </tr>
@@ -435,7 +507,7 @@ const DatasetCreator = (props) => {
                         </div>
 
                         <form onSubmit={handleCreateDataset}>
-                            <button type="submit" className='btn-app app-primary-bg-color btn text-dark fw-bold text-decoration-none'>Save dataset</button>
+                            <button type="submit" className='btn-app app-primary-bg-color btn text-light fw-bold text-decoration-none'>Save dataset</button>
                         </form>
                     </>
 
@@ -451,29 +523,5 @@ const DatasetCreator = (props) => {
 
 }
 
-// function DatasetInput(isEntered, id) {
-//     const [input, setInput] = useState("");
-
-//     if(isEntered) {
-//         return (
-//             <td>{input}</td>
-//         );
-//     }
-//     else {
-//         return (
-//             <input type='text' id={'dataset-input-'+id} onKeyDown={(e) => saveInput(e)}></input>
-//         );
-//     }
-
-//     function saveInput(event) {
-//         if(event.key == 'Enter') {
-//             let inputValue = document.getElementById('dataset-input-'+id).value;
-//             setInput(inputValue);
-//             isEntered = true;
-//         }
-
-//     }
-
-// }
 
 export default DatasetCreator;

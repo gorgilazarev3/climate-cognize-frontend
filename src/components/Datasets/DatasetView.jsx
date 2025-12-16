@@ -212,7 +212,7 @@ const DatasetView = () => {
                                     <tr>
                                         {dataset['columns'].map((entry, index) => {
                                             return (
-                                                <th>{entry}<br></br><span className='text-muted fw-light'>{dataset['types'][index]}</span></th>
+                                                <th key={`${entry}-${index}`}>{entry}<br></br><span className='text-muted fw-light'>{dataset['types'][index]}</span></th>
                                             );
                                         })}
                                     </tr>
@@ -222,10 +222,10 @@ const DatasetView = () => {
 
                                     {getEntriesPage(offset, nextPageOffset).map((entry, index) => {
                                         return (
-                                            <tr>
+                                            <tr key={`${entry}-${index}`}>
                                                 {entry['entries'].map((cell, index) => {
                                                     return (
-                                                        <td>{cell}</td>
+                                                        <td key={`${cell}-${index}`}>{cell}</td>
                                                     );
                                                 })}
                                             </tr>
